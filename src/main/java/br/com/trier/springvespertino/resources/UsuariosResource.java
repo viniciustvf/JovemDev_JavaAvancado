@@ -2,6 +2,7 @@ package br.com.trier.springvespertino.resources;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,12 +32,20 @@ public class UsuariosResource {
 		return ResponseEntity.ok(u);
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping("/id/{id}")
 	public ResponseEntity<User> findById(@PathVariable Integer id) {
 		User u = lista.stream().filter(user -> user.getId().equals(id))
-				    .findAny()
-				    .orElse(null);
+				      .findAny()
+				      .orElse(null);
 		return u != null? ResponseEntity.ok(u): ResponseEntity.noContent().build();
+	}
+	
+	@GetMapping("/nome/{nome}")
+	public ResponseEntity<List<User>> findByName(@PathVariable String nome) {
+		List<User> u = lista.stream().filter(user -> user.getName().equalsIgnoreCase(nome))
+				      .collect(Collectors.toList());
+		
+		return u.isEmpty()? ResponseEntity.noContent().build() : ResponseEntity.ok(u);
 	}
 	
 	
@@ -46,4 +55,5 @@ public class UsuariosResource {
 	
 	
 	
+		
 }

@@ -2,11 +2,14 @@ package br.com.trier.springvespertino.resources;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.trier.springvespertino.models.Dado;
@@ -15,8 +18,10 @@ import br.com.trier.springvespertino.models.Dado;
 @RequestMapping("/dados")
 public class DadoResource {
 
-	@PostMapping("/lancar")
-	public ResponseEntity<Dado> lancarDados( @RequestParam Integer qt, @RequestParam Integer aposta) {
+	List<Dado> list = new ArrayList<Dado>();
+	
+	@PostMapping("/lancar/{qt}/{aposta}")
+	public ResponseEntity<List<Dado>> lancarDados( @PathVariable Integer qt, @PathVariable Integer aposta) {
 		
 		Integer n1 = 0;
 		
@@ -39,8 +44,19 @@ public class DadoResource {
 
 		Double percentualSorteado = (double)(somaTotal * 100) / aposta;
 		
-		Dado resultado = new Dado(numerosDados, somaTotal, percentualSorteado);
-		return ResponseEntity.ok(resultado);
+		list.add(new Dado(numerosDados, somaTotal, percentualSorteado));
+		
+		return ResponseEntity.ok(list);
+	}
+
+	@GetMapping("/buscar-por-soma/{soma}")
+	public ResponseEntity<List<Dado>> findBySoma(@PathVariable Integer soma) {
+		List<Dado> d = list.stream()
+			.filter(dado -> dado.getSoma().equals(soma))
+			.collect(Collectors.toList());
+		
+		return d.isEmpty()? ResponseEntity.badRequest().build() : ResponseEntity.ok(d);
+
 	}
 	
 }

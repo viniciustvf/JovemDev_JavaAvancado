@@ -2,7 +2,9 @@ package br.com.trier.springvespertino.models;
 
 import java.util.List;
 
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
