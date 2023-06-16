@@ -8,4 +8,5 @@ import br.com.trier.springvespertino.models.Championship;
 @Repository
 public interface ChampionshipRepository extends JpaRepository<Championship, Integer>{
 
+	
 }
