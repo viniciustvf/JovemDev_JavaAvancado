@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode (of = "id")
-@Entity(name="user")
+@Entity(name="app_user")
 public class User {
 	
 	@Setter

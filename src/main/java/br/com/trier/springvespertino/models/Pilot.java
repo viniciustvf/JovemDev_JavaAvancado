@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -12,19 +14,28 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@NoArgsConstructor
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode (of = "id")
-@Entity(name = "team")
-public class Team {
+@Entity(name = "pilot")
+public class Pilot {
 
 	@Setter
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_team")
+	@Column(name = "id_pilot")
 	private Integer id;
 	
-	@Column(name = "name_team", unique = true)
+	@Column(name = "name_pilot")
 	private String name;
+	
+	@OneToOne
+	@JoinColumn(name = "id_country")
+	private Country country;
+	
+	@OneToOne
+	@JoinColumn(name = "id_team")
+	private Team team;
 	
 }
