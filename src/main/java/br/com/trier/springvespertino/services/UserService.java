@@ -20,5 +20,4 @@ public interface UserService {
 	
 	List<User> findByNameStartingWithIgnoreCase(String name);
 	
-	
 }

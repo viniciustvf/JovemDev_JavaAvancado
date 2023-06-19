@@ -2,7 +2,7 @@ package br.com.trier.springvespertino.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -13,11 +13,13 @@ import org.springframework.test.context.jdbc.Sql;
 
 import br.com.trier.springvespertino.BaseTests;
 import br.com.trier.springvespertino.models.Team;
+import br.com.trier.springvespertino.services.exceptions.ObjectNotFound;
+import br.com.trier.springvespertino.services.exceptions.IntegrityViolation;
 import jakarta.transaction.Transactional;
 
 @Transactional
-public class TeamServiceTest extends BaseTests{
-
+public class TeamServiceTest extends BaseTests {
+	
 	@Autowired
 	TeamService teamService;
 	
@@ -25,89 +27,120 @@ public class TeamServiceTest extends BaseTests{
     @DisplayName("Teste buscar time por ID")
     @Sql({"classpath:/resources/sqls/time.sql"})
     void findByIdTest() {
-        var team = teamService.findById(1);
-        assertNotNull(team);
-        assertEquals(1, team.getId());
-        assertEquals("Time 1", team.getName());
+        var time = teamService.findById(1);
+        assertNotNull(time);
+        assertEquals(1, time.getId());
+        assertEquals("Team 1", time.getName());
     }
-	
-	@Test
+    
+    @Test
     @DisplayName("Teste buscar time por ID inexistente")
     @Sql({"classpath:/resources/sqls/time.sql"})
     void findByIdWrongTest() {
-        var team = teamService.findById(10);
-        assertNull(team);
+        var exception = assertThrows(ObjectNotFound.class,() -> teamService.findById(10));
+        assertEquals("O time 10 não existe", exception.getMessage());
     }
-	
-	@Test
+    
+    @Test
     @DisplayName("Teste buscar time por nome")
     @Sql({"classpath:/resources/sqls/time.sql"})
     void findByNameTest() {
-        var team = teamService.findByName("Time 1");
-        assertNotNull(team);
-        assertEquals(1, team.size());
+        var time = teamService.findByName("Team 1");
+        assertEquals("Team 1", time.getName());
+        var exception = assertThrows(ObjectNotFound.class, () -> teamService.findByName("timi"));
+        assertEquals("Nenhum nome timi cadastrado", exception.getMessage());
     }
-	
-	@Test
-    @DisplayName("Teste buscar time por nome inexistente")
-    @Sql({"classpath:/resources/sqls/time.sql"})
-    void findByNameWrongTest() {
-        var time = teamService.findByName("c");
-        assertEquals(0, time.size());
-    }
-	
-	@Test
-    @DisplayName("Teste buscar time por letra que começa")
-    @Sql({"classpath:/resources/sqls/time.sql"})
-    void findByNameStartingWithTest() {
-        var list = teamService.findByNameStartingWithIgnoreCase("t");
-        assertNotNull(list);
-        assertEquals(2, list.size());
-    }
-	
-	@Test
-    @DisplayName("Teste buscar time por letra que começa inexistente")
+    
+    @Test
+    @DisplayName("Teste buscar time por letra que começa errada")
     @Sql({"classpath:/resources/sqls/time.sql"})
     void findByNameStartingWithWrongTest() {
-        var list = teamService.findByNameStartingWithIgnoreCase("z");
-        assertEquals(0, list.size());
+        var lista = teamService.findByNameStartingWithIgnoreCase("u");
+        assertEquals(2, lista.size());
+        var exception = assertThrows(ObjectNotFound.class, () -> teamService.findByNameStartingWithIgnoreCase("z"));
+        assertEquals("Nenhum nome de time inicia com z cadastrado", exception.getMessage());
     }
-	
-	@Test
+    
+    @Test
     @DisplayName("Teste inserir time")
     void insertTeamTest() {
-        Team team = new Team(null, "insert");
-        teamService.insert(team);
-        team = teamService.findById(1);
-        assertEquals(1, team.getId());
-        assertEquals("insert", team.getName());
+        Team time = new Team(null, "insert");
+        teamService.insert(time);
+        time = teamService.findById(time.getId());
+        assertEquals(1, time.getId());
+        assertEquals("insert", time.getName());
     }
-	
-	@Test
-    @DisplayName("Teste apagar time por ID")
+    
+    @Test
+    @DisplayName("Teste apagar time")
     @Sql({"classpath:/resources/sqls/time.sql"})
     void deleteByIdTest() {
         teamService.delete(1);
         List<Team> list = teamService.listAll();
         assertEquals(1, list.size());
     }
-	
-	@Test
-    @DisplayName("Teste apagar time por ID incorreto")
+    
+    @Test
+    @DisplayName("Teste apagar time inexistente")
     @Sql({"classpath:/resources/sqls/time.sql"})
     void deleteByIdNonExistsTest() {
-        teamService.delete(10);
-        List<Team> list = teamService.listAll();
-        assertEquals(2, list.size());
+        var exception = assertThrows(ObjectNotFound.class,() -> teamService.delete(10));
+        assertEquals("O time 10 não existe", exception.getMessage());
     }
-	
-	@Test
+    
+    @Test
+    @DisplayName("Teste alterar time inexistente")
+    @Sql({"classpath:/resources/sqls/time.sql"})
+    void updateTeamNonExistsTest() {
+    	Team time = new Team(20, "update");
+    	var exception = assertThrows(ObjectNotFound.class,() -> teamService.update(time));
+        assertEquals("O time 20 não existe", exception.getMessage());
+    }
+    
+    @Test
+    @DisplayName("Teste listar todos sem times cadastrados")
+    @Sql({"classpath:/resources/sqls/time.sql"})
+    void listAllNonExistsTeamTest() {
+    	teamService.delete(1);
+    	teamService.delete(2);
+    	var exception = assertThrows(ObjectNotFound.class,() -> teamService.listAll());
+        assertEquals("Nenhum time cadastrado", exception.getMessage());
+    }
+    
+    @Test
+    @DisplayName("Teste inserir time com nome duplicado")
+    @Sql({"classpath:/resources/sqls/time.sql"})
+    void insertTeamTimeDuplicateTest() {
+        Team time = new Team(null, "Time 1");
+        var exception = assertThrows(IntegrityViolation.class,() -> teamService.insert(time));
+        assertEquals("Time já existente: Time 1", exception.getMessage());
+ 
+    }
+    
+    @Test
+    @DisplayName("Teste alterar time com nome duplicado")
+    @Sql({"classpath:/resources/sqls/time.sql"})
+    void updateTeamTimeWrongTest() {
+    	Team time = new Team(2, "Time 1");
+        var exception = assertThrows(IntegrityViolation.class, () -> teamService.update(time));
+        assertEquals("Time já existente: Time 1", exception.getMessage());
+    }
+    
+    @Test
     @DisplayName("Teste alterar time")
-    @Sql({"classpath:/resources/sqls/usuario.sql"})
-    void updateByIdTest() {
-    	Team team = new Team(1, "update");
-    	teamService.update(team);
-    	assertEquals("update", team.getName());
-    	assertEquals(1, team.getId());
+    @Sql({"classpath:/resources/sqls/time.sql"})
+    void updateTeamTest() {
+        Team time = new Team(1, "update");
+        teamService.update(time);
+        assertEquals(1, time.getId());
+        assertEquals("update", time.getName());
+    }
+    
+    @Test
+    @DisplayName("Teste listar todos")
+    @Sql({"classpath:/resources/sqls/time.sql"})
+    void listAllTest() {
+    	List<Team> lista = teamService.listAll();
+    	assertEquals(2, lista.size());
     }
 }

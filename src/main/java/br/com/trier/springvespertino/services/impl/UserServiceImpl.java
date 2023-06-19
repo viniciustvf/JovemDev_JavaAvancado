@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import br.com.trier.springvespertino.models.User;
 import br.com.trier.springvespertino.repositories.UserRepository;
 import br.com.trier.springvespertino.services.UserService;
+import br.com.trier.springvespertino.services.exceptions.IntegrityViolation;
+import br.com.trier.springvespertino.services.exceptions.ObjectNotFound;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -16,44 +18,63 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private UserRepository repository;
 	
+	private void findByEmail(User user) {
+		User busca = repository.findByEmail(user.getEmail());
+		if ( busca != null && busca.getId() != user.getId()) {
+			throw new IntegrityViolation("Email já existente: %s".formatted(user.getEmail()));
+		}
+	}
+
 	@Override
 	public User findById(Integer id) {
 		Optional<User> user = repository.findById(id);
-		return user.orElse(null);
+		return user.orElseThrow(() -> new ObjectNotFound("O usuário %s não existe".formatted(id)));
 	}
 
 	@Override
 	public User insert(User user) {
+		findByEmail(user);
 		return repository.save(user);
 	}
 
 	@Override
 	public List<User> listAll() {
-		return repository.findAll();
+		List<User> lista = repository.findAll();
+		if ( lista.isEmpty() ) {
+			throw new ObjectNotFound("Nenhum usuário cadastrado");
+		}
+		return lista;
 	}
 
 	@Override
 	public User update(User user) {
+		findById(user.getId());
+		findByEmail(user);
 		return repository.save(user);
 	}
 
 	@Override
 	public void delete(Integer id) {
 		User user = findById(id);
-		if ( user != null ) {
-			repository.delete(user);
-		}
+		repository.delete(user);
 	}
 
 	@Override
 	public List<User> findByName(String name) {
-		return repository.findByName(name);
+		List<User> lista = repository.findByName(name);
+		if ( lista.isEmpty() ) {
+			throw new ObjectNotFound("Nenhum nome %s cadastrado".formatted(name));
+		}
+		return lista;
 	}
 	
 	@Override
-	public List<User> findByNameStartingWithIgnoreCase(String name) {
-		return repository.findByNameStartingWithIgnoreCase(name);
+	public List<User> findByNameStartingWithIgnoreCase(String letra) {
+		List<User> lista = repository.findByNameStartingWithIgnoreCase(letra);
+		if ( lista.isEmpty() ) {
+			throw new ObjectNotFound("Nenhum nome de usuário inicia com %s cadastrado".formatted(letra));
+		}
+		return lista;
 	}
-	
-	
+
 }

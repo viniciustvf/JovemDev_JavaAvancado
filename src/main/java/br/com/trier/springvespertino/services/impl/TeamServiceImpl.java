@@ -10,6 +10,8 @@ import br.com.trier.springvespertino.models.Team;
 import br.com.trier.springvespertino.models.User;
 import br.com.trier.springvespertino.repositories.TeamRepository;
 import br.com.trier.springvespertino.services.TeamService;
+import br.com.trier.springvespertino.services.exceptions.IntegrityViolation;
+import br.com.trier.springvespertino.services.exceptions.ObjectNotFound;
 
 @Service
 public class TeamServiceImpl implements TeamService {
@@ -17,24 +19,38 @@ public class TeamServiceImpl implements TeamService {
 	@Autowired
 	private TeamRepository repository;
 	
+	private void findByName(Team team) {
+		Team busca = repository.findByName(team.getName());
+		if ( busca != null && busca.getId() != team.getId()) {
+			throw new IntegrityViolation("Nome já existente: %s".formatted(team.getName()));
+		}
+	}
+	
 	@Override
 	public Team findById(Integer id) {
 		Optional<Team> team = repository.findById(id);
-		return team.orElse(null);
+		return team.orElseThrow(() -> new ObjectNotFound("O time %s não existe".formatted(id)));
 	}
 
 	@Override
 	public Team insert(Team team) {
+		findByName(team);
 		return repository.save(team);
 	}
 
 	@Override
 	public List<Team> listAll() {
-		return repository.findAll();
+		List<Team> lista = repository.findAll();
+		if ( lista.isEmpty() ) {
+			throw new ObjectNotFound("Nenhum time cadastrado");
+		}
+		return lista;
 	}
 
 	@Override
 	public Team update(Team team) {
+		findById(team.getId());
+		findByName(team);
 		return repository.save(team);
 	}
 
@@ -47,14 +63,21 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public List<Team> findByName(String name) {
-		return repository.findByName(name);
+	public Team findByName(String name) {
+		Team team = repository.findByName(name);
+		if ( team == null) {
+			throw new ObjectNotFound("Nenhum nome time cadastrado");
+		}
+		return team;
 	}
 
 	@Override
-	public List<Team> findByNameStartingWithIgnoreCase(String name) {
-		return repository.findByNameStartingWithIgnoreCase(name);
+	public List<Team> findByNameStartingWithIgnoreCase(String letra) {
+		List<Team> lista = repository.findByNameStartingWithIgnoreCase(letra);
+		if ( lista.isEmpty() ) {
+			throw new ObjectNotFound("Nenhum nome de time inicia com %s cadastrado".formatted(letra));
+		}
+		return lista;
 	}
-	
 	
 }

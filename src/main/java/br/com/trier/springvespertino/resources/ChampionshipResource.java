@@ -53,4 +53,34 @@ public class ChampionshipResource {
 		service.delete(id);
 		return ResponseEntity.ok().build();		
 	}
+	
+	@GetMapping("name/{description}")
+	public ResponseEntity<List<Championship>> findByName (@PathVariable String description) {
+		List<Championship> championship = service.findByDescription(description);
+		return championship != null? ResponseEntity.ok(championship) : ResponseEntity.badRequest().build();		
+	}
+	
+	@GetMapping("name-starting/{description}")
+	public ResponseEntity<List<Championship>> findByDescriptionStartingWithIgnoreCase (@PathVariable String description) {
+		List<Championship> championship = service.findByDescriptionStartingWithIgnoreCase(description);
+		return championship != null? ResponseEntity.ok(championship) : ResponseEntity.badRequest().build();		
+	}
+	
+	@GetMapping("year/{year}")
+	public ResponseEntity<List<Championship>> findByYear (@PathVariable Integer year) {
+		List<Championship> championship = service.findByYear(year);
+		return championship != null? ResponseEntity.ok(championship) : ResponseEntity.badRequest().build();		
+	}
+	
+	@GetMapping("year-between/{initialYear}/{finalYear}")
+	public ResponseEntity<List<Championship>> findByYearBetween (@PathVariable Integer initialYear, @PathVariable Integer finalYear) {
+		List<Championship> championship = service.findByYearBetween(initialYear, finalYear);
+		return championship != null? ResponseEntity.ok(championship) : ResponseEntity.badRequest().build();		
+	}
+	
+	
+	
+	
+	
+	
 }
