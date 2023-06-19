@@ -44,4 +44,24 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 			repository.delete(championship);
 		}
 	}
+
+	@Override
+	public List<Championship> findByDescriptionStartingWithIgnoreCase(String description) {
+		return repository.findByDescriptionStartingWithIgnoreCase(description);
+	}
+
+	@Override
+	public List<Championship> findByDescription(String description) {
+		return repository.findByDescription(description);
+	}
+
+	@Override
+	public List<Championship> findByYear(Integer year) {
+		return repository.findByYear(year);
+	}
+
+	@Override
+	public List<Championship> findByYearBetween(Integer initialYear, Integer finallYear) {
+		return repository.findByYearBetween(initialYear, finallYear);
+	}
 }

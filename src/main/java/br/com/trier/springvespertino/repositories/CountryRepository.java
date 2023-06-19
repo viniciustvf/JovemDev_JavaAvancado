@@ -11,8 +11,8 @@ import br.com.trier.springvespertino.models.Team;
 @Repository
 public interface CountryRepository extends JpaRepository<Country, Integer>{
 
-	List<Team> findByNameStartingWithIgnoreCase(String name);
+	List<Country> findByNameStartingWithIgnoreCase(String name);
 	
-	List<Team> findByName(String name);
+	List<Country> findByName(String name);
 	
 }

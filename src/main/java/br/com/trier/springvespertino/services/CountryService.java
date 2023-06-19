@@ -17,8 +17,8 @@ public interface CountryService {
 	
 	void delete (Integer id);
 	
-	List<Team> findByNameStartingWithIgnoreCase(String name);
+	List<Country> findByNameStartingWithIgnoreCase(String name);
 	
-	List<Team> findByName(String name);
+	List<Country> findByName(String name);
 	
 }

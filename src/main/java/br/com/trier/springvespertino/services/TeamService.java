@@ -3,7 +3,6 @@ package br.com.trier.springvespertino.services;
 import java.util.List;
 
 import br.com.trier.springvespertino.models.Team;
-import br.com.trier.springvespertino.models.User;
 
 public interface TeamService {
 

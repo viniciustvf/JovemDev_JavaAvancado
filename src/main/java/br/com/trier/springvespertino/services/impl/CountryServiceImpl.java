@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.trier.springvespertino.models.Country;
-import br.com.trier.springvespertino.models.Team;
 import br.com.trier.springvespertino.repositories.CountryRepository;
 import br.com.trier.springvespertino.services.CountryService;
 
@@ -47,12 +46,12 @@ public class CountryServiceImpl implements CountryService{
 	}
 
 	@Override
-	public List<Team> findByNameStartingWithIgnoreCase(String name) {
+	public List<Country> findByNameStartingWithIgnoreCase(String name) {
 		return repository.findByNameStartingWithIgnoreCase(name);
 	}
 
 	@Override
-	public List<Team> findByName(String name) {
+	public List<Country> findByName(String name) {
 		return repository.findByName(name);
 	}
 }

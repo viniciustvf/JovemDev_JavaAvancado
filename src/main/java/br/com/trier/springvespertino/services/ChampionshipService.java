@@ -16,4 +16,12 @@ public interface ChampionshipService {
 	
 	void delete (Integer id);
 	
+	List<Championship> findByDescriptionStartingWithIgnoreCase(String name);
+	
+	List<Championship> findByDescription(String name);
+	
+	List<Championship>findByYear(Integer year);
+	
+	List<Championship>findByYearBetween(Integer initialYear, Integer finallYear);
+	
 }

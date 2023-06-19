@@ -13,7 +13,6 @@ import org.springframework.test.context.jdbc.Sql;
 
 import br.com.trier.springvespertino.BaseTests;
 import br.com.trier.springvespertino.models.Team;
-import br.com.trier.springvespertino.models.User;
 import jakarta.transaction.Transactional;
 
 @Transactional
@@ -111,9 +110,4 @@ public class TeamServiceTest extends BaseTests{
     	assertEquals("update", team.getName());
     	assertEquals(1, team.getId());
     }
-	
-	
-	
-	
-	
 }
