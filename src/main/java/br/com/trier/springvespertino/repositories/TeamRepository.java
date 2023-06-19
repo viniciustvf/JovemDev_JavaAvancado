@@ -14,6 +14,4 @@ public interface TeamRepository extends JpaRepository<Team, Integer>{
 	
 	Team findByName(String name);
 	
-	void findByName(Team team);
-	
 }

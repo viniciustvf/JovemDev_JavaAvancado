@@ -19,7 +19,7 @@ public class TeamServiceImpl implements TeamService {
 	@Autowired
 	private TeamRepository repository;
 	
-	private void findByName(Team team) {
+	private void isTeamNameUnique(Team team) {
 		Team busca = repository.findByName(team.getName());
 		if ( busca != null && busca.getId() != team.getId()) {
 			throw new IntegrityViolation("Nome já existente: %s".formatted(team.getName()));
@@ -34,7 +34,7 @@ public class TeamServiceImpl implements TeamService {
 
 	@Override
 	public Team insert(Team team) {
-		findByName(team);
+		isTeamNameUnique(team);
 		return repository.save(team);
 	}
 
@@ -50,7 +50,7 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	public Team update(Team team) {
 		findById(team.getId());
-		findByName(team);
+		isTeamNameUnique(team);
 		return repository.save(team);
 	}
 
@@ -66,7 +66,7 @@ public class TeamServiceImpl implements TeamService {
 	public Team findByName(String name) {
 		Team team = repository.findByName(name);
 		if ( team == null) {
-			throw new ObjectNotFound("Nenhum nome time cadastrado");
+			throw new ObjectNotFound("Nenhum time %s cadastrado".formatted(name));
 		}
 		return team;
 	}

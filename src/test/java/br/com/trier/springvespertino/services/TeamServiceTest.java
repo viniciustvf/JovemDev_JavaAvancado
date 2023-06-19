@@ -30,7 +30,7 @@ public class TeamServiceTest extends BaseTests {
         var time = teamService.findById(1);
         assertNotNull(time);
         assertEquals(1, time.getId());
-        assertEquals("Team 1", time.getName());
+        assertEquals("Time 1", time.getName());
     }
     
     @Test
@@ -45,17 +45,17 @@ public class TeamServiceTest extends BaseTests {
     @DisplayName("Teste buscar time por nome")
     @Sql({"classpath:/resources/sqls/time.sql"})
     void findByNameTest() {
-        var time = teamService.findByName("Team 1");
-        assertEquals("Team 1", time.getName());
+        var time = teamService.findByName("Time 1");
+        assertEquals("Time 1", time.getName());
         var exception = assertThrows(ObjectNotFound.class, () -> teamService.findByName("timi"));
-        assertEquals("Nenhum nome timi cadastrado", exception.getMessage());
+        assertEquals("Nenhum time timi cadastrado", exception.getMessage());
     }
     
     @Test
     @DisplayName("Teste buscar time por letra que começa errada")
     @Sql({"classpath:/resources/sqls/time.sql"})
     void findByNameStartingWithWrongTest() {
-        var lista = teamService.findByNameStartingWithIgnoreCase("u");
+        var lista = teamService.findByNameStartingWithIgnoreCase("t");
         assertEquals(2, lista.size());
         var exception = assertThrows(ObjectNotFound.class, () -> teamService.findByNameStartingWithIgnoreCase("z"));
         assertEquals("Nenhum nome de time inicia com z cadastrado", exception.getMessage());
@@ -113,7 +113,7 @@ public class TeamServiceTest extends BaseTests {
     void insertTeamTimeDuplicateTest() {
         Team time = new Team(null, "Time 1");
         var exception = assertThrows(IntegrityViolation.class,() -> teamService.insert(time));
-        assertEquals("Time já existente: Time 1", exception.getMessage());
+        assertEquals("Nome já existente: Time 1", exception.getMessage());
  
     }
     
@@ -123,7 +123,7 @@ public class TeamServiceTest extends BaseTests {
     void updateTeamTimeWrongTest() {
     	Team time = new Team(2, "Time 1");
         var exception = assertThrows(IntegrityViolation.class, () -> teamService.update(time));
-        assertEquals("Time já existente: Time 1", exception.getMessage());
+        assertEquals("Nome já existente: Time 1", exception.getMessage());
     }
     
     @Test
