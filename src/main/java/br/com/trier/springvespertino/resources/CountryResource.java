@@ -19,38 +19,44 @@ import br.com.trier.springvespertino.services.CountryService;
 @RestController
 @RequestMapping("/country")
 public class CountryResource {
-	
+
 	@Autowired
 	private CountryService service;
 	
 	@PostMapping
 	public ResponseEntity<Country> insert (@RequestBody Country country) {
-		Country newCountry = service.insert(country);
-		return newCountry != null ? ResponseEntity.ok(newCountry) : ResponseEntity.noContent().build();
+		return ResponseEntity.ok(service.insert(country));
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Country> findById (@PathVariable Integer id) {
-		Country Country = service.findById(id);
-		return Country != null? ResponseEntity.ok(Country) : ResponseEntity.badRequest().build();		
+		return ResponseEntity.ok(service.findById(id));		  
 	}
 	
 	@GetMapping
 	public ResponseEntity<List<Country>> listAll () {
-		List<Country> Country = service.listAll();
-		return Country.size() > 0 ? ResponseEntity.ok(Country) : ResponseEntity.badRequest().build();		
+		return ResponseEntity.ok(service.listAll());	
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Country> update (@PathVariable Integer id, @RequestBody Country Country) {
-		Country.setId(id);
-		Country = service.update(Country);
-		return Country != null ? ResponseEntity.ok(Country) : ResponseEntity.badRequest().build();		
+	public ResponseEntity<Country> update (@PathVariable Integer id, @RequestBody Country country) {
+		country.setId(id);
+		return ResponseEntity.ok(service.update(country));
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete (@PathVariable Integer id) {
 		service.delete(id);
-		return ResponseEntity.ok().build();		
+		return ResponseEntity.noContent().build();		
+	}	
+	
+	@GetMapping("/name-starting/{nome}")
+	public ResponseEntity<List<Country>> findByNameStartingWithIgnoreCase(@PathVariable String name) {
+		return ResponseEntity.ok(service.findByNameStartingWithIgnoreCase(name));		
+	}
+	
+	@GetMapping("/name/{name}")
+	public ResponseEntity<Country> findByNameIgnoreCase(@PathVariable String name) {
+		return ResponseEntity.ok(service.findByNameIgnoreCase(name));		
 	}
 }

@@ -1,6 +1,5 @@
 package br.com.trier.springvespertino.models;
 
-import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

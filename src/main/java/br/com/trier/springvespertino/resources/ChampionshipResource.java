@@ -25,62 +25,48 @@ public class ChampionshipResource {
 	
 	@PostMapping
 	public ResponseEntity<Championship> insert (@RequestBody Championship championship) {
-		Championship newChampionship = service.insert(championship);
-		return newChampionship != null ? ResponseEntity.ok(newChampionship) : ResponseEntity.noContent().build();
+		return ResponseEntity.ok(service.insert(championship));
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Championship> findById (@PathVariable Integer id) {
-		Championship Championship = service.findById(id);
-		return Championship != null? ResponseEntity.ok(Championship) : ResponseEntity.badRequest().build();		
+		return ResponseEntity.ok(service.findById(id));		  
 	}
 	
 	@GetMapping
 	public ResponseEntity<List<Championship>> listAll () {
-		List<Championship> Championship = service.listAll();
-		return Championship.size() > 0 ? ResponseEntity.ok(Championship) : ResponseEntity.badRequest().build();		
+		return ResponseEntity.ok(service.listAll());	
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Championship> update (@PathVariable Integer id, @RequestBody Championship Championship) {
-		Championship.setId(id);
-		Championship = service.update(Championship);
-		return Championship != null ? ResponseEntity.ok(Championship) : ResponseEntity.badRequest().build();		
+	public ResponseEntity<Championship> update (@PathVariable Integer id, @RequestBody Championship championship) {
+		championship.setId(id);
+		return ResponseEntity.ok(service.update(championship));
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete (@PathVariable Integer id) {
 		service.delete(id);
-		return ResponseEntity.ok().build();		
+		return ResponseEntity.noContent().build();		
+	}	
+	
+	@GetMapping("/description/{description}")
+	public ResponseEntity<List<Championship>> findByNameIgnoreCase(@PathVariable String description) {
+		return ResponseEntity.ok(service.findByDescriptionIgnoreCase(description));		
 	}
 	
-	@GetMapping("name/{description}")
-	public ResponseEntity<List<Championship>> findByName (@PathVariable String description) {
-		List<Championship> championship = service.findByDescription(description);
-		return championship != null? ResponseEntity.ok(championship) : ResponseEntity.badRequest().build();		
-	}
-	
-	@GetMapping("name-starting/{description}")
+	@GetMapping("description-starting/{description}")
 	public ResponseEntity<List<Championship>> findByDescriptionStartingWithIgnoreCase (@PathVariable String description) {
-		List<Championship> championship = service.findByDescriptionStartingWithIgnoreCase(description);
-		return championship != null? ResponseEntity.ok(championship) : ResponseEntity.badRequest().build();		
+		return ResponseEntity.ok(service.findByDescriptionStartingWithIgnoreCase(description));		
 	}
 	
 	@GetMapping("year/{year}")
 	public ResponseEntity<List<Championship>> findByYear (@PathVariable Integer year) {
-		List<Championship> championship = service.findByYear(year);
-		return championship != null? ResponseEntity.ok(championship) : ResponseEntity.badRequest().build();		
+		return ResponseEntity.ok(service.findByYear(year));		
 	}
 	
 	@GetMapping("year-between/{initialYear}/{finalYear}")
 	public ResponseEntity<List<Championship>> findByYearBetween (@PathVariable Integer initialYear, @PathVariable Integer finalYear) {
-		List<Championship> championship = service.findByYearBetween(initialYear, finalYear);
-		return championship != null? ResponseEntity.ok(championship) : ResponseEntity.badRequest().build();		
+		return ResponseEntity.ok(service.findByYearBetween(initialYear, finalYear));		
 	}
-	
-	
-	
-	
-	
-	
 }

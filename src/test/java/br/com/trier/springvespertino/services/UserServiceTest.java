@@ -44,17 +44,6 @@ public class UserServiceTest extends BaseTests {
     }
     
     @Test
-    @DisplayName("Teste buscar usuario por nome")
-    @Sql({"classpath:/resources/sqls/usuario.sql"})
-    void findByNameTest() {
-        var usuario = userService.findByName("User 1");
-        assertNotNull(usuario);
-        assertEquals(1, usuario.size());
-        var exception = assertThrows(ObjectNotFound.class, () -> userService.findByName("uzer"));
-        assertEquals("Nenhum nome uzer cadastrado", exception.getMessage());
-    }
-    
-    @Test
     @DisplayName("Teste buscar usuario por letra que começa errada")
     @Sql({"classpath:/resources/sqls/usuario.sql"})
     void findByNameStartingWithWrongTest() {
@@ -149,5 +138,15 @@ public class UserServiceTest extends BaseTests {
     void listAllTest() {
     	List<User> lista = userService.listAll();
     	assertEquals(2, lista.size());
+    }
+    
+    @Test
+    @DisplayName("Teste buscar usuario com ignore case")
+    @Sql({"classpath:/resources/sqls/usuario.sql"})
+    void findByNameIgnoreCaseWrongTest() {
+        var lista = userService.findByNameIgnoreCase("USER 1");
+        assertEquals(1, lista.size());
+        var exception = assertThrows(ObjectNotFound.class, () -> userService.findByNameIgnoreCase("UZER 1"));
+        assertEquals("Nenhum nome de usuário UZER 1 cadastrado", exception.getMessage());
     }
 }

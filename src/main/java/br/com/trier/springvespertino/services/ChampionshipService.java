@@ -18,7 +18,7 @@ public interface ChampionshipService {
 	
 	List<Championship> findByDescriptionStartingWithIgnoreCase(String name);
 	
-	List<Championship> findByDescription(String name);
+	List<Championship> findByDescriptionIgnoreCase(String name);
 	
 	List<Championship>findByYear(Integer year);
 	

@@ -12,7 +12,7 @@ public interface ChampionshipRepository extends JpaRepository<Championship, Inte
 
 	List<Championship> findByDescriptionStartingWithIgnoreCase(String description);
 	
-	List<Championship> findByDescription(String description);
+	List<Championship> findByDescriptionIgnoreCase(String description);
 	
 	List<Championship>findByYear(Integer year);
 	

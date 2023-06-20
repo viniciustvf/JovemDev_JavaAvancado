@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService{
 			throw new IntegrityViolation("Email já existente: %s".formatted(user.getEmail()));
 		}
 	}
-
+ 
 	@Override
 	public User findById(Integer id) {
 		Optional<User> user = repository.findById(id);
@@ -60,19 +60,19 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<User> findByName(String name) {
-		List<User> lista = repository.findByName(name);
-		if ( lista.isEmpty() ) {
-			throw new ObjectNotFound("Nenhum nome %s cadastrado".formatted(name));
-		}
-		return lista;
-	}
-	
-	@Override
 	public List<User> findByNameStartingWithIgnoreCase(String letra) {
 		List<User> lista = repository.findByNameStartingWithIgnoreCase(letra);
 		if ( lista.isEmpty() ) {
 			throw new ObjectNotFound("Nenhum nome de usuário inicia com %s cadastrado".formatted(letra));
+		}
+		return lista;
+	}
+
+	@Override
+	public List<User> findByNameIgnoreCase(String name) {
+		List<User> lista = repository.findByNameIgnoreCase(name);
+		if ( lista.isEmpty() ) {
+			throw new ObjectNotFound("Nenhum nome de usuário %s cadastrado".formatted(name));
 		}
 		return lista;
 	}

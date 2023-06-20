@@ -19,38 +19,44 @@ import br.com.trier.springvespertino.services.TeamService;
 @RestController
 @RequestMapping("/team")
 public class TeamResource {
-	
+
 	@Autowired
 	private TeamService service;
 	
 	@PostMapping
 	public ResponseEntity<Team> insert (@RequestBody Team team) {
-		Team newTeam = service.insert(team);
-		return newTeam != null ? ResponseEntity.ok(newTeam) : ResponseEntity.noContent().build();
+		return ResponseEntity.ok(service.insert(team));
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Team> findById (@PathVariable Integer id) {
-		Team team = service.findById(id);
-		return team != null? ResponseEntity.ok(team) : ResponseEntity.badRequest().build();		
+		return ResponseEntity.ok(service.findById(id));		  
 	}
 	
 	@GetMapping
 	public ResponseEntity<List<Team>> listAll () {
-		List<Team> team = service.listAll();
-		return team.size() > 0 ? ResponseEntity.ok(team) : ResponseEntity.badRequest().build();		
+		return ResponseEntity.ok(service.listAll());	
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Team> update (@PathVariable Integer id, @RequestBody Team team) {
 		team.setId(id);
-		team = service.update(team);
-		return team != null ? ResponseEntity.ok(team) : ResponseEntity.badRequest().build();		
+		return ResponseEntity.ok(service.update(team));
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete (@PathVariable Integer id) {
 		service.delete(id);
-		return ResponseEntity.ok().build();		
+		return ResponseEntity.noContent().build();		
+	}	
+	
+	@GetMapping("/name-starting/{nome}")
+	public ResponseEntity<List<Team>> findByNameStartingWithIgnoreCase(@PathVariable String name) {
+		return ResponseEntity.ok(service.findByNameStartingWithIgnoreCase(name));		
+	}
+	
+	@GetMapping("/name/{name}")
+	public ResponseEntity<Team> findByNameIgnoreCase(@PathVariable String name) {
+		return ResponseEntity.ok(service.findByNameIgnoreCase(name));		
 	}
 }

@@ -20,7 +20,7 @@ public class TeamServiceImpl implements TeamService {
 	private TeamRepository repository;
 	
 	private void isTeamNameUnique(Team team) {
-		Team busca = repository.findByName(team.getName());
+		Team busca = repository.findByNameIgnoreCase(team.getName());
 		if ( busca != null && busca.getId() != team.getId()) {
 			throw new IntegrityViolation("Nome já existente: %s".formatted(team.getName()));
 		}
@@ -63,8 +63,8 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public Team findByName(String name) {
-		Team team = repository.findByName(name);
+	public Team findByNameIgnoreCase(String name) {
+		Team team = repository.findByNameIgnoreCase(name);
 		if ( team == null) {
 			throw new ObjectNotFound("Nenhum time %s cadastrado".formatted(name));
 		}
@@ -77,7 +77,7 @@ public class TeamServiceImpl implements TeamService {
 		if ( lista.isEmpty() ) {
 			throw new ObjectNotFound("Nenhum nome de time inicia com %s cadastrado".formatted(letra));
 		}
-		return lista;
+		return lista; 
 	}
 	
 }

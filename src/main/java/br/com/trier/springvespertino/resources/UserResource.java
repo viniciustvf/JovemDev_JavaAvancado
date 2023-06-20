@@ -25,13 +25,12 @@ public class UserResource {
 	
 	@PostMapping
 	public ResponseEntity<User> insert (@RequestBody User user) {
-		User newUser = service.insert(user);
-		return newUser != null ? ResponseEntity.ok(newUser) : ResponseEntity.noContent().build();
+		return ResponseEntity.ok(service.insert(user));
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<User> findById (@PathVariable Integer id) {
-		return ResponseEntity.ok(service.findById(id));		
+		return ResponseEntity.ok(service.findById(id));		  
 	}
 	
 	@GetMapping
@@ -48,16 +47,16 @@ public class UserResource {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete (@PathVariable Integer id) {
 		service.delete(id);
-		return ResponseEntity.ok().build();		
+		return ResponseEntity.noContent().build();		
 	}	
-	
-	@GetMapping("/name/{name}")
-	public ResponseEntity<List<User>> findByName (@PathVariable String name) {
-		return ResponseEntity.ok(service.findByName(name));		
-	}
 	
 	@GetMapping("/name-starting/{nome}")
 	public ResponseEntity<List<User>> findByNameStartingWithIgnoreCase(@PathVariable String name) {
 		return ResponseEntity.ok(service.findByNameStartingWithIgnoreCase(name));		
+	}
+	
+	@GetMapping("/name/{name}")
+	public ResponseEntity<List<User>> findByNameIgnoreCase(@PathVariable String name) {
+		return ResponseEntity.ok(service.findByNameIgnoreCase(name));		
 	}
 }

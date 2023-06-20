@@ -16,7 +16,7 @@ public interface UserService {
 	
 	void delete (Integer id);
 	
-	List<User> findByName(String name);
+	List<User> findByNameIgnoreCase(String name);
 	
 	List<User> findByNameStartingWithIgnoreCase(String name);
 	

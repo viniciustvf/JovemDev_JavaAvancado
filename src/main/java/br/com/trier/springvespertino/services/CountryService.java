@@ -19,6 +19,6 @@ public interface CountryService {
 	
 	List<Country> findByNameStartingWithIgnoreCase(String name);
 	
-	List<Country> findByName(String name);
+	Country findByNameIgnoreCase(String name);
 	
 }

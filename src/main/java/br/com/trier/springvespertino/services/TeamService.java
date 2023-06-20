@@ -16,7 +16,7 @@ public interface TeamService {
 	
 	void delete (Integer id);
 	
-	Team findByName(String name);
+	Team findByNameIgnoreCase(String name);
 	
 	List<Team> findByNameStartingWithIgnoreCase(String name);
 	

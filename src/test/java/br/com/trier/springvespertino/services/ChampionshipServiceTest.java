@@ -2,7 +2,7 @@ package br.com.trier.springvespertino.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -13,144 +13,157 @@ import org.springframework.test.context.jdbc.Sql;
 
 import br.com.trier.springvespertino.BaseTests;
 import br.com.trier.springvespertino.models.Championship;
+import br.com.trier.springvespertino.services.exceptions.ObjectNotFound;
+import br.com.trier.springvespertino.services.exceptions.IntegrityViolation;
 import jakarta.transaction.Transactional;
 
 @Transactional
 public class ChampionshipServiceTest extends BaseTests {
-
+	
 	@Autowired
 	ChampionshipService championshipService;
 	
 	@Test
-	@DisplayName("Teste buscar campeonato por ID")
+    @DisplayName("Teste buscar campeonato por ID")
     @Sql({"classpath:/resources/sqls/campeonato.sql"})
     void findByIdTest() {
-        var championship = championshipService.findById(1);
-        assertNotNull(championship);
-        assertEquals(1, championship.getId());
-        assertEquals("Campeonato 1", championship.getDescription());
+        var campeonato = championshipService.findById(1);
+        assertNotNull(campeonato);
+        assertEquals(1, campeonato.getId());
+        assertEquals("Campeonato 1", campeonato.getDescription());
     }
-	
-	@Test
-	@DisplayName("Teste buscar campeonato por ID inexistente")
+    
+    @Test
+    @DisplayName("Teste buscar campeonato por ID inexistente")
     @Sql({"classpath:/resources/sqls/campeonato.sql"})
     void findByIdWrongTest() {
-        var championship = championshipService.findById(10);
-        assertNull(championship);
+        var exception = assertThrows(ObjectNotFound.class,() -> championshipService.findById(10));
+        assertEquals("O campeonato 10 não existe", exception.getMessage());
     }
-	
-	@Test
-	@DisplayName("Teste buscar campeonato por nome")
+    
+    @Test
+    @DisplayName("Teste buscar campeonato por nome")
     @Sql({"classpath:/resources/sqls/campeonato.sql"})
     void findByDescriptionTest() {
-        var championship = championshipService.findByDescription("Campeonato 1");
-        assertNotNull(championship);
-        assertEquals(1, championship.size());
+        var campeonato = championshipService.findByDescriptionIgnoreCase("Campeonato 1");
+        assertEquals(1, campeonato.size());
+        var exception = assertThrows(ObjectNotFound.class, () -> championshipService.findByDescriptionIgnoreCase("campi"));
+        assertEquals("Nenhum campeonato campi cadastrado", exception.getMessage());
     }
-	
-	@Test
-	@DisplayName("Teste buscar campeonato por nome inexistente")
-    @Sql({"classpath:/resources/sqls/campeonato.sql"})
-    void findByDescriptionWrongTest() {
-        var campeonato = championshipService.findByDescription("z");
-        assertEquals(0, campeonato.size());
-    }
-	
-	@Test
-	@DisplayName("Teste buscar campeonato por letra que começa")
-    @Sql({"classpath:/resources/sqls/campeonato.sql"})
-    void findByDescriptionStartingWithTest() {
-        var list = championshipService.findByDescriptionStartingWithIgnoreCase("c");
-        assertNotNull(list);
-        assertEquals(2, list.size());
-    }
-	
-	@Test
-    @DisplayName("Teste buscar campeonato por letra que começa inexistente")
+    
+    @Test
+    @DisplayName("Teste buscar campeonato por letra que começa")
     @Sql({"classpath:/resources/sqls/campeonato.sql"})
     void findByDescriptionStartingWithWrongTest() {
-        var list = championshipService.findByDescriptionStartingWithIgnoreCase("z");
-        assertEquals(0, list.size());
+        var lista = championshipService.findByDescriptionStartingWithIgnoreCase("c");
+        assertEquals(2, lista.size());
+        var exception = assertThrows(ObjectNotFound.class, () -> championshipService.findByDescriptionStartingWithIgnoreCase("z"));
+        assertEquals("Nenhum campeonato inicia com z cadastrado", exception.getMessage());
     }
-	
-	@Test
+    
+    @Test
     @DisplayName("Teste inserir campeonato")
     void insertChampionshipTest() {
-        Championship championship = new Championship(null, "insert", 2000);
-        championshipService.insert(championship);
-        championship = championshipService.findById(2);
-        assertEquals(2, championship.getId());
-        assertEquals(2000, championship.getYear());
-        assertEquals("insert", championship.getDescription());
+        Championship campeonato = new Championship(null, "insert", 2024);
+        championshipService.insert(campeonato);
+        campeonato = championshipService.findById(campeonato.getId());
+        assertEquals(2024, campeonato.getYear());
+        assertEquals("insert", campeonato.getDescription());
     }
-	
-	@Test
-    @DisplayName("Teste apagar campeonato por ID")
+    
+    @Test
+    @DisplayName("Teste apagar campeonato")
     @Sql({"classpath:/resources/sqls/campeonato.sql"})
     void deleteByIdTest() {
         championshipService.delete(1);
         List<Championship> list = championshipService.listAll();
         assertEquals(1, list.size());
     }
-	
-	@Test
-    @DisplayName("Teste apagar campeonato por ID incorreto")
+    
+    @Test
+    @DisplayName("Teste apagar campeonato inexistente")
     @Sql({"classpath:/resources/sqls/campeonato.sql"})
     void deleteByIdNonExistsTest() {
-        championshipService.delete(10);
-        List<Championship> list = championshipService.listAll();
-        assertEquals(2, list.size());
+        var exception = assertThrows(ObjectNotFound.class,() -> championshipService.delete(10));
+        assertEquals("O campeonato 10 não existe", exception.getMessage());
     }
-	
-	@Test
+    
+    @Test
+    @DisplayName("Teste alterar campeonato inexistente")
+    @Sql({"classpath:/resources/sqls/campeonato.sql"})
+    void updateChampionshipNonExistsTest() {
+    	Championship campeonato = new Championship(20, "update", 2000);
+    	var exception = assertThrows(ObjectNotFound.class,() -> championshipService.update(campeonato));
+        assertEquals("O campeonato 20 não existe", exception.getMessage());
+    }
+    
+    @Test
+    @DisplayName("Teste listar todos sem campeonato cadastrados")
+    @Sql({"classpath:/resources/sqls/campeonato.sql"})
+    void listAllNonExistsChampionshipTest() {
+    	championshipService.delete(1);
+    	championshipService.delete(2);
+    	var exception = assertThrows(ObjectNotFound.class,() -> championshipService.listAll());
+        assertEquals("Nenhum campeonato cadastrado", exception.getMessage());
+    }
+    
+    @Test
+    @DisplayName("Teste inserir campeonato com ano errado")
+    @Sql({"classpath:/resources/sqls/campeonato.sql"})
+    void insertChampionshipYearWrongTest() {
+    	Championship campeonato1 = new Championship(null, "update", 2030);
+        var exception1 = assertThrows(IntegrityViolation.class,() -> championshipService.insert(campeonato1));
+        assertEquals("Ano deve ser maior que 1990 e menor que 2024", exception1.getMessage());
+        Championship campeonato2 = new Championship(null, "update", 1989);
+        var exception2 = assertThrows(IntegrityViolation.class,() -> championshipService.insert(campeonato2));
+        assertEquals("Ano deve ser maior que 1990 e menor que 2024", exception2.getMessage());
+    }
+    
+    @Test
     @DisplayName("Teste alterar campeonato")
-    @Sql({"classpath:/resources/sqls/usuario.sql"})
-    void updateByIdTest() {
-    	Championship championship = new Championship(1, "update", 2010);
-    	championshipService.update(championship);
-    	assertEquals("update", championship.getDescription());
-    	assertEquals(2010, championship.getYear());
-    	assertEquals(1, championship.getId());
+    @Sql({"classpath:/resources/sqls/campeonato.sql"})
+    void updateChampionshipTest() {
+    	Championship campeonato = new Championship(1, "update", 2003);
+        championshipService.update(campeonato);
+        assertEquals(1, campeonato.getId());
+        assertEquals("update", campeonato.getDescription());
+        assertEquals(2003, campeonato.getYear());
     }
-	
-	@Test
-	@DisplayName("Teste buscar campeonato por ano")
+    
+    @Test
+    @DisplayName("Teste listar todos")
+    @Sql({"classpath:/resources/sqls/campeonato.sql"})
+    void listAllTest() {
+    	List<Championship> lista = championshipService.listAll();
+    	assertEquals(2, lista.size());
+    }
+    
+    @Test
+    @DisplayName("Teste buscar campeonato por ano")
     @Sql({"classpath:/resources/sqls/campeonato.sql"})
     void findByYearTest() {
-        var championship = championshipService.findByYear(2020);
-        assertNotNull(championship);
-        assertEquals(1, championship.size());
+        var lista = championshipService.findByYear(2020);
+        assertEquals(1, lista.size());
+        var exception = assertThrows(ObjectNotFound.class, () -> championshipService.findByYear(2030));
+        assertEquals("Nenhum campeonato em 2030 cadastrado", exception.getMessage());
     }
-	
-	@Test
-	@DisplayName("Teste buscar campeonato por ano inexistente")
-    @Sql({"classpath:/resources/sqls/campeonato.sql"})
-    void findByYearWrongTest() {
-        var championship = championshipService.findByYear(1111);
-        assertEquals(0, championship.size());
-    }
-	
-	@Test
-	@DisplayName("Teste buscar campeonato entre intervalo de anos")
+    
+    @Test
+    @DisplayName("Teste buscar campeonato por ano between")
     @Sql({"classpath:/resources/sqls/campeonato.sql"})
     void findByYearBetweenTest() {
-        List<Championship> championship = championshipService.findByYearBetween(2000, 2030);
-        assertNotNull(championship);
-        assertEquals(2, championship.size());
-        championship = championshipService.findByYearBetween(2021, 2030);
-        assertNotNull(championship);
-        assertEquals(1, championship.size());
+        var lista = championshipService.findByYearBetween(2010, 2024);
+        assertEquals(2, lista.size());
+        var exception = assertThrows(ObjectNotFound.class, () -> championshipService.findByYearBetween(2030, 1989));
+        assertEquals("Nenhum campeonato entre 2030 e 1989 cadastrado", exception.getMessage());
     }
-	
-	@Test
-	@DisplayName("Teste buscar campeonato entre intervalo de anos inexistente")
-    @Sql({"classpath:/resources/sqls/campeonato.sql"})
-    void findByYearBetweenWrongTest() {
-        List<Championship> championship = championshipService.findByYearBetween(9999, 9999);
-        assertEquals(0, championship.size());
-        championship = championshipService.findByYearBetween(2320, 2030);
-        assertEquals(0, championship.size());
-        championship = championshipService.findByYearBetween(2021, 2022);
-        assertEquals(0, championship.size());
-    }	
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

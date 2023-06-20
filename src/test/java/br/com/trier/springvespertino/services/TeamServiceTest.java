@@ -45,9 +45,9 @@ public class TeamServiceTest extends BaseTests {
     @DisplayName("Teste buscar time por nome")
     @Sql({"classpath:/resources/sqls/time.sql"})
     void findByNameTest() {
-        var time = teamService.findByName("Time 1");
+        var time = teamService.findByNameIgnoreCase("Time 1");
         assertEquals("Time 1", time.getName());
-        var exception = assertThrows(ObjectNotFound.class, () -> teamService.findByName("timi"));
+        var exception = assertThrows(ObjectNotFound.class, () -> teamService.findByNameIgnoreCase("timi"));
         assertEquals("Nenhum time timi cadastrado", exception.getMessage());
     }
     
