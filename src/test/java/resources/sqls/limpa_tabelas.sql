@@ -1,0 +1,1 @@
+delete from app_user where id_user > 0;

@@ -20,6 +20,9 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 	private ChampionshipRepository repository;
 	
 	private void validateYearChampionship(Championship championship) {
+		if(championship.getYear() == null) {
+			throw new IntegrityViolation("Ano não pode ser nulo");
+		}
 		LocalDate validDate = LocalDate.now().plusYears(1);
 		if(championship.getYear() > validDate.getYear() || championship.getYear() < 1990) {
 			throw new IntegrityViolation("Ano deve ser maior que 1990 e menor que %s".formatted(validDate.getYear()));

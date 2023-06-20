@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService{
 	private UserRepository repository;
 	
 	private void findByEmail(User user) {
-		User busca = repository.findByEmail(user.getEmail());
+		User busca = repository.findByEmail(user.getEmail()); 
 		if ( busca != null && busca.getId() != user.getId()) {
 			throw new IntegrityViolation("Email já existente: %s".formatted(user.getEmail()));
 		}
