@@ -60,9 +60,7 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 	@Override
 	public void delete(Integer id) {
 		Championship championship = findById(id);	
-		if (championship != null ) {
-			repository.delete(championship);
-		}
+		repository.delete(championship);
 	}
 
 	@Override

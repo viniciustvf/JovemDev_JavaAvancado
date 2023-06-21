@@ -147,7 +147,9 @@ public class ChampionshipServiceTest extends BaseTests {
         assertEquals(1, lista.size());
         var exception = assertThrows(IntegrityViolation.class, () -> championshipService.findByYear(2030));
         assertEquals("Ano deve ser maior que 1990 e menor que %s".formatted(LocalDateTime.now().plusYears(1).getYear()), exception.getMessage());
-    }
+        var exception2 = assertThrows(ObjectNotFound.class, () -> championshipService.findByYear(2000));
+        assertEquals("Nenhum campeonato em 2000 cadastrado", exception2.getMessage());
+    } 
     
     @Test
     @DisplayName("Teste buscar campeonato por ano between")
@@ -158,7 +160,10 @@ public class ChampionshipServiceTest extends BaseTests {
         var exception = assertThrows(IntegrityViolation.class, () -> championshipService.findByYearBetween(2030, 1989));
         assertEquals("Ano deve ser maior que 1990 e menor que %s".formatted(LocalDateTime.now().plusYears(1).getYear()), exception.getMessage());
         var exception2 = assertThrows(IntegrityViolation.class, () -> championshipService.findByYearBetween(null, null));
-        assertEquals("Ano não pode ser nulo", exception2.getMessage());
+        assertEquals("Ano não pode ser nulo", exception2.getMessage()); 
+        var exception3 = assertThrows(ObjectNotFound.class, () -> championshipService.findByYearBetween(2000, 2001));
+        assertEquals("Nenhum campeonato entre 2000 e 2001 cadastrado", exception3.getMessage());
+        
     }
     
     

@@ -46,7 +46,7 @@ public class ChampionshipResource {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete (@PathVariable Integer id) {
-		service.delete(id);
+		service.delete(id); 
 		return ResponseEntity.noContent().build();		
 	}	
 	

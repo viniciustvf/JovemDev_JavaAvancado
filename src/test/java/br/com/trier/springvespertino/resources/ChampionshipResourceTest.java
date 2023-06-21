@@ -114,6 +114,14 @@ public class ChampionshipResourceTest {
 	}
 	
 	@Test
+	@DisplayName("Teste listar todos os campeonatos sem campeonatos")
+	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
+	public void listAllWrongTest() {
+		ResponseEntity<Championship> response = getChampionship("/championship"); 
+		assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
+	}
+	
+	@Test
 	@DisplayName("Teste alterar campeonato")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/campeonato.sql")
@@ -130,7 +138,7 @@ public class ChampionshipResourceTest {
 	    );
 		assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
 		Championship championship = responseEntity.getBody();
-		assertEquals("update", championship.getDescription());
+		assertEquals("update", championship.getDescription()); 
 		assertEquals(2010, championship.getYear());
 		assertEquals(1, championship.getId());
 	}
@@ -202,7 +210,7 @@ public class ChampionshipResourceTest {
 		assertEquals(2, champ.size());
 
 		ResponseEntity<Championship> response2 = getChampionship("/championship/year-between/2013/2025");
-	    assertEquals(HttpStatus.BAD_REQUEST, response2.getStatusCode());
+	    assertEquals(HttpStatus.BAD_REQUEST, response2.getStatusCode()); 
 	}
 	
 	

@@ -8,10 +8,12 @@ import org.springframework.test.context.ActiveProfiles;
 import br.com.trier.springvespertino.services.ChampionshipService;
 import br.com.trier.springvespertino.services.CountryService;
 import br.com.trier.springvespertino.services.TeamService;
+import br.com.trier.springvespertino.services.TrackService;
 import br.com.trier.springvespertino.services.UserService;
 import br.com.trier.springvespertino.services.impl.ChampionshipServiceImpl;
 import br.com.trier.springvespertino.services.impl.CountryServiceImpl;
 import br.com.trier.springvespertino.services.impl.TeamServiceImpl;
+import br.com.trier.springvespertino.services.impl.TrackServiceImpl;
 import br.com.trier.springvespertino.services.impl.UserServiceImpl;
 
 @TestConfiguration
@@ -37,6 +39,11 @@ public class BaseTests {
 	@Bean
 	public ChampionshipService ChampionshipService() {
 		return new ChampionshipServiceImpl();
+	}
+	
+	@Bean
+	public TrackService TrackService() {
+		return new TrackServiceImpl();
 	}
 	
 	
