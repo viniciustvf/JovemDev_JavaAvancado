@@ -67,6 +67,7 @@ public class ChampionshipResource {
 	
 	@GetMapping("year-between/{initialYear}/{finalYear}")
 	public ResponseEntity<List<Championship>> findByYearBetween (@PathVariable Integer initialYear, @PathVariable Integer finalYear) {
-		return ResponseEntity.ok(service.findByYearBetween(initialYear, finalYear));		
-	}
+			return ResponseEntity.ok(service.findByYearBetween(initialYear, finalYear));
+		}
+	
 }

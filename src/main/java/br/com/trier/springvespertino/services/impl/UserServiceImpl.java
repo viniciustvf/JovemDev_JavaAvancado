@@ -77,4 +77,10 @@ public class UserServiceImpl implements UserService{
 		return lista;
 	}
 
+	@Override
+	public User findByEmail(String email) {
+		Optional<User> user = Optional.ofNullable(repository.findByEmail(email));
+		return user.orElseThrow(() ->new ObjectNotFound("Nenhum email de usuário %s cadastrado".formatted(email))) ;
+	}
+
 }

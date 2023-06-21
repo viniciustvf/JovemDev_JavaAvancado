@@ -1,6 +1,9 @@
 package br.com.trier.springvespertino.resources;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -20,15 +23,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
 import br.com.trier.springvespertino.SpringVespertinoApplication;
 import br.com.trier.springvespertino.models.dto.UserDTO;
 
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = Replace.ANY)
-@Sql(executionPhase = ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:/resources/sqls/usuario.sql")
-@Sql(executionPhase = ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:/resources/sqls/limpa_tabelas.sql")
 @SpringBootTest(classes = SpringVespertinoApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserResourceTest {
 
@@ -49,9 +49,9 @@ public class UserResourceTest {
 	}
 	
 	@Test
-	@DisplayName("Cadastrar usuário")
+	@DisplayName("Inserir usuário")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
-	public void createUserTest() {
+	public void insertUserTest() {
 		UserDTO dto = new UserDTO(null, "nome", "vini@hotmail.com", "senha");
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -80,6 +80,8 @@ public class UserResourceTest {
 
 	@Test
 	@DisplayName("Buscar por id inexistente")
+	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
+	@Sql("classpath:/resources/sqls/usuario.sql")
 	public void findByIdNonExistsTest() {
 		ResponseEntity<UserDTO> response = getUser("/user/100");
 		assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
@@ -87,6 +89,8 @@ public class UserResourceTest {
 	
 	@Test
 	@DisplayName("Teste listar todos os usuários")
+	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
+	@Sql("classpath:/resources/sqls/usuario.sql")
 	public void listAllTest() {
 		ResponseEntity<List<UserDTO>> response = getUsers("/user"); 
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
@@ -130,24 +134,41 @@ public class UserResourceTest {
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/usuario.sql")
 	public void findByNameStartingTest() {
-		ResponseEntity<List<UserDTO>> response = getUsers("/user/u");
+		ResponseEntity<List<UserDTO>> response = getUsers("/user/name-starting/u");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
 		List<UserDTO> user = response.getBody();
 		assertEquals(2, user.size());
-		
-		ResponseEntity<List<UserDTO>> response2 = getUsers("/user/z");
-		assertEquals(response2.getStatusCode(), HttpStatus.OK);
-		List<UserDTO> user2 = response.getBody();
-		assertEquals(0, user2.size());
+
+		ResponseEntity<UserDTO> response2 = getUser("/user/name-starting/z");
+	    assertEquals(response2.getStatusCode(), HttpStatus.NOT_FOUND);
 	}
 	
+	@Test
+	@DisplayName("Buscar por nome ignore case")
+	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
+	@Sql("classpath:/resources/sqls/usuario.sql")
+	public void findByNameIgnoreCaseTest() {
+		ResponseEntity<List<UserDTO>> response = getUsers("/user/name/user 1");
+		assertEquals(response.getStatusCode(), HttpStatus.OK);
+		List<UserDTO> user = response.getBody();
+		assertEquals(1, user.size());
+
+		ResponseEntity<UserDTO> response2 = getUser("/user/name/uzer 1");
+	    assertEquals(response2.getStatusCode(), HttpStatus.NOT_FOUND);
+	}
 	
-	
-	
-	
-	
-	
-	
-	
+	@Test
+	@DisplayName("Buscar por email")
+	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
+	@Sql("classpath:/resources/sqls/usuario.sql")
+	public void findByEmailTest() {
+		ResponseEntity<UserDTO> response = getUser("/user/email/Email 1");
+		assertEquals(response.getStatusCode(), HttpStatus.OK);
+		UserDTO user = response.getBody();
+		assertEquals("Email 1", user.getEmail());
+
+		ResponseEntity<UserDTO> response2 = getUser("/user/email/email 1");
+	    assertEquals(response2.getStatusCode(), HttpStatus.NOT_FOUND);
+	}
 	
 }

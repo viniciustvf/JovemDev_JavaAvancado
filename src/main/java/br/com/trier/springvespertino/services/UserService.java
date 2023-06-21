@@ -20,4 +20,6 @@ public interface UserService {
 	
 	List<User> findByNameStartingWithIgnoreCase(String name);
 	
+	User findByEmail(String email);
+	
 }

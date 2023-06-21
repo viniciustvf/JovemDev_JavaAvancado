@@ -149,4 +149,15 @@ public class UserServiceTest extends BaseTests {
         var exception = assertThrows(ObjectNotFound.class, () -> userService.findByNameIgnoreCase("UZER 1"));
         assertEquals("Nenhum nome de usuário UZER 1 cadastrado", exception.getMessage());
     }
-}
+    
+    @Test
+    @DisplayName("Teste buscar usuário por email")
+    @Sql({"classpath:/resources/sqls/usuario.sql"})
+    void findByEmailTest() {
+        User user = userService.findByEmail("Email 1");
+        assertEquals("Email 1", user.getEmail());
+        var exception = assertThrows(ObjectNotFound.class,() -> userService.findByEmail("Email 0909"));
+        assertEquals("Nenhum email de usuário Email 0909 cadastrado", exception.getMessage());
+    }
+    
+} 

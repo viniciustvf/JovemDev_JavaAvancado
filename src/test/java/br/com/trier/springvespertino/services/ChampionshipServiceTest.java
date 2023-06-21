@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -144,8 +145,8 @@ public class ChampionshipServiceTest extends BaseTests {
     void findByYearTest() {
         var lista = championshipService.findByYear(2020);
         assertEquals(1, lista.size());
-        var exception = assertThrows(ObjectNotFound.class, () -> championshipService.findByYear(2030));
-        assertEquals("Nenhum campeonato em 2030 cadastrado", exception.getMessage());
+        var exception = assertThrows(IntegrityViolation.class, () -> championshipService.findByYear(2030));
+        assertEquals("Ano deve ser maior que 1990 e menor que %s".formatted(LocalDateTime.now().plusYears(1).getYear()), exception.getMessage());
     }
     
     @Test
@@ -154,8 +155,10 @@ public class ChampionshipServiceTest extends BaseTests {
     void findByYearBetweenTest() {
         var lista = championshipService.findByYearBetween(2010, 2024);
         assertEquals(2, lista.size());
-        var exception = assertThrows(ObjectNotFound.class, () -> championshipService.findByYearBetween(2030, 1989));
-        assertEquals("Nenhum campeonato entre 2030 e 1989 cadastrado", exception.getMessage());
+        var exception = assertThrows(IntegrityViolation.class, () -> championshipService.findByYearBetween(2030, 1989));
+        assertEquals("Ano deve ser maior que 1990 e menor que %s".formatted(LocalDateTime.now().plusYears(1).getYear()), exception.getMessage());
+        var exception2 = assertThrows(IntegrityViolation.class, () -> championshipService.findByYearBetween(null, null));
+        assertEquals("Ano não pode ser nulo", exception2.getMessage());
     }
     
     

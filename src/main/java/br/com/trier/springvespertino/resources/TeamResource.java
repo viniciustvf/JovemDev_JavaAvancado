@@ -50,7 +50,7 @@ public class TeamResource {
 		return ResponseEntity.noContent().build();		
 	}	
 	
-	@GetMapping("/name-starting/{nome}")
+	@GetMapping("/name-starting/{name}")
 	public ResponseEntity<List<Team>> findByNameStartingWithIgnoreCase(@PathVariable String name) {
 		return ResponseEntity.ok(service.findByNameStartingWithIgnoreCase(name));		
 	}

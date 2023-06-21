@@ -64,7 +64,7 @@ public class CountryServiceTest extends BaseTests {
     @Test
     @DisplayName("Teste inserir pais")
     void insertCountryTest() {
-        Country pais = new Country(null, "insert");
+        Country pais = new Country(null, "insert"); 
         countryService.insert(pais);
         pais = countryService.findById(pais.getId());
         assertEquals(1, pais.getId());

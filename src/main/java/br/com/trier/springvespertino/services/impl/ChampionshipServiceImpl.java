@@ -19,12 +19,12 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 	@Autowired
 	private ChampionshipRepository repository;
 	
-	private void validateYearChampionship(Championship championship) {
-		if(championship.getYear() == null) {
+	private void validateYearChampionship(Integer year) {
+		if(year == null) {
 			throw new IntegrityViolation("Ano não pode ser nulo");
 		}
 		LocalDate validDate = LocalDate.now().plusYears(1);
-		if(championship.getYear() > validDate.getYear() || championship.getYear() < 1990) {
+		if(year > validDate.getYear() || year < 1990) {
 			throw new IntegrityViolation("Ano deve ser maior que 1990 e menor que %s".formatted(validDate.getYear()));
 		}
 	}
@@ -37,7 +37,7 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 
 	@Override
 	public Championship insert(Championship championship) {
-		validateYearChampionship(championship);
+		validateYearChampionship(championship.getYear());
 		return repository.save(championship);
 	}
 
@@ -53,7 +53,7 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 	@Override
 	public Championship update(Championship championship) {
 		findById(championship.getId());
-		validateYearChampionship(championship);
+		validateYearChampionship(championship.getYear());
 		return repository.save(championship);
 	}
 
@@ -85,6 +85,7 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 
 	@Override
 	public List<Championship> findByYear(Integer year) {
+		validateYearChampionship(year);
 		List<Championship> championship = repository.findByYear(year); 
 		if ( championship.isEmpty() ) {
 			throw new ObjectNotFound("Nenhum campeonato em %s cadastrado".formatted(year));
@@ -93,10 +94,12 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 	}
 
 	@Override
-	public List<Championship> findByYearBetween(Integer initialYear, Integer finallYear) {
-		List<Championship> championship = repository.findByYearBetween(initialYear, finallYear);
+	public List<Championship> findByYearBetween(Integer initialYear, Integer finalYear) {
+		validateYearChampionship(initialYear);
+		validateYearChampionship(finalYear);
+		List<Championship> championship = repository.findByYearBetween(initialYear, finalYear);
 		if ( championship.isEmpty() ) {
-			throw new ObjectNotFound("Nenhum campeonato entre %s e %s cadastrado".formatted(initialYear, finallYear));
+			throw new ObjectNotFound("Nenhum campeonato entre %s e %s cadastrado".formatted(initialYear, finalYear));
 		}
 		return championship;
 	}

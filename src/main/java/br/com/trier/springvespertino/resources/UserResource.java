@@ -52,7 +52,7 @@ public class UserResource {
 		return ResponseEntity.noContent().build();		
 	}	
 	
-	@GetMapping("/name-starting/{nome}")
+	@GetMapping("/name-starting/{name}")
 	public ResponseEntity<List<UserDTO>> findByNameStartingWithIgnoreCase(@PathVariable String name) {
 		return ResponseEntity.ok(service.findByNameStartingWithIgnoreCase(name).stream().map((user) -> user.toDTO()).toList());		
 	}
@@ -60,5 +60,10 @@ public class UserResource {
 	@GetMapping("/name/{name}")
 	public ResponseEntity<List<UserDTO>> findByNameIgnoreCase(@PathVariable String name) {
 		return ResponseEntity.ok(service.findByNameIgnoreCase(name).stream().map((user) -> user.toDTO()).toList());		
+	}
+	
+	@GetMapping("/email/{email}")
+	public ResponseEntity<UserDTO> findByEmail(@PathVariable String email) {
+		return ResponseEntity.ok(service.findByEmail(email).toDTO());		
 	}
 }
