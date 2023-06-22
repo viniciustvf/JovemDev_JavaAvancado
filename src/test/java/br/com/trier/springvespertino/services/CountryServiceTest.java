@@ -56,7 +56,7 @@ public class CountryServiceTest extends BaseTests {
     @Sql({"classpath:/resources/sqls/pais.sql"})
     void findByNameStartingWithWrongTest() {
         var lista = countryService.findByNameStartingWithIgnoreCase("p");
-        assertEquals(2, lista.size());
+        assertEquals(3, lista.size());
         var exception = assertThrows(ObjectNotFound.class, () -> countryService.findByNameStartingWithIgnoreCase("z"));
         assertEquals("Nenhum nome de pais inicia com z cadastrado", exception.getMessage());
     }
@@ -77,7 +77,7 @@ public class CountryServiceTest extends BaseTests {
     void deleteByIdTest() {
         countryService.delete(1);
         List<Country> list = countryService.listAll();
-        assertEquals(1, list.size());
+        assertEquals(2, list.size());
     }
     
     @Test
@@ -99,10 +99,7 @@ public class CountryServiceTest extends BaseTests {
     
     @Test
     @DisplayName("Teste listar todos sem pais cadastrados")
-    @Sql({"classpath:/resources/sqls/pais.sql"})
     void listAllNonExistsCountryTest() {
-    	countryService.delete(1);
-    	countryService.delete(2);
     	var exception = assertThrows(ObjectNotFound.class,() -> countryService.listAll());
         assertEquals("Nenhum pais cadastrado", exception.getMessage());
     }
@@ -141,6 +138,6 @@ public class CountryServiceTest extends BaseTests {
     @Sql({"classpath:/resources/sqls/pais.sql"})
     void listAllTest() {
     	List<Country> lista = countryService.listAll();
-    	assertEquals(2, lista.size());
+    	assertEquals(3, lista.size());
     }
 }

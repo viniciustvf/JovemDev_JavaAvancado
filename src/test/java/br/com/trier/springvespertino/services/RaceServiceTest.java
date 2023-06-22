@@ -2,8 +2,12 @@ package br.com.trier.springvespertino.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -23,124 +27,95 @@ public class RaceServiceTest extends BaseTests {
 	@Autowired
 	RaceService raceService;
 	
+	@Autowired
+	TrackService trackService;
+	
+	@Autowired
+	ChampionshipService championshipService;
+	
 	@Test
-    @DisplayName("Teste buscar raceo por ID")
-    @Sql({"classpath:/resources/sqls/raceo.sql"})
+    @DisplayName("Teste buscar corrida por ID")
+	@Sql({"classpath:/resources/sqls/pais.sql"})
+	@Sql({"classpath:/resources/sqls/pista.sql"})
+	@Sql({"classpath:/resources/sqls/campeonato.sql"})
+	@Sql({"classpath:/resources/sqls/corrida.sql"})
     void findByIdTest() {
-        var raceo = raceService.findById(1);
-        assertNotNull(raceo);
-        assertEquals(1, raceo.getId());
-        assertEquals("Time 1", raceo.getName());
+        var race = raceService.findById(1);
+        assertNotNull(race);
+        assertEquals(1, race.getId());
+        assertEquals(ZonedDateTime.of(2020, 6, 22, 15, 25, 0, 100000000, ZoneOffset.ofHours(-3)), race.getDate());
     }
     
-    @Test
-    @DisplayName("Teste buscar raceo por ID inexistente")
-    @Sql({"classpath:/resources/sqls/raceo.sql"})
+	@Test
+    @DisplayName("Teste buscar corrida por ID inexistente")
+	@Sql({"classpath:/resources/sqls/pais.sql"})
+	@Sql({"classpath:/resources/sqls/pista.sql"})
+	@Sql({"classpath:/resources/sqls/campeonato.sql"})
+	@Sql({"classpath:/resources/sqls/corrida.sql"})
     void findByIdWrongTest() {
         var exception = assertThrows(ObjectNotFound.class,() -> raceService.findById(10));
-        assertEquals("O raceo 10 não existe", exception.getMessage());
+        assertEquals("A corrida 10 não existe", exception.getMessage());
     }
     
-    @Test
-    @DisplayName("Teste buscar raceo por nome")
-    @Sql({"classpath:/resources/sqls/raceo.sql"})
-    void findByNameTest() {
-        var raceo = raceService.findByNameIgnoreCase("Time 1");
-        assertEquals("Time 1", raceo.getName());
-        var exception = assertThrows(ObjectNotFound.class, () -> raceService.findByNameIgnoreCase("timi"));
-        assertEquals("Nenhum raceo timi cadastrado", exception.getMessage());
+	@Test
+    @DisplayName("Teste buscar corrida por data")
+	@Sql({"classpath:/resources/sqls/pais.sql"})
+	@Sql({"classpath:/resources/sqls/pista.sql"})
+	@Sql({"classpath:/resources/sqls/campeonato.sql"})
+	@Sql({"classpath:/resources/sqls/corrida.sql"})
+    void findByDateTest() {
+        var race = raceService.findByDate(ZonedDateTime.of(2020, 6, 22, 15, 25, 0, 100000000, ZoneOffset.ofHours(-3)));
+        assertNotNull(race);
+        assertEquals(1, race.size());
+    }
+	
+	@Test
+    @DisplayName("Teste buscar corrida por data errada")
+	@Sql({"classpath:/resources/sqls/pais.sql"})
+	@Sql({"classpath:/resources/sqls/pista.sql"})
+	@Sql({"classpath:/resources/sqls/campeonato.sql"})
+	@Sql({"classpath:/resources/sqls/corrida.sql"})
+    void findByDateWrongTest() {
+        var exception = assertThrows(ObjectNotFound.class, () -> raceService.findByDate(ZonedDateTime.of(2024, 6, 22, 15, 25, 0, 100000000, ZoneOffset.ofHours(-3))));
+        assertEquals("Nenhuma corrida encontrada para a data 2024-06-22T15:25:00.100-03:00", exception.getMessage());
+    }
+	
+	@Test
+    @DisplayName("Teste buscar corridas por pista")
+	@Sql({"classpath:/resources/sqls/pais.sql"})
+	@Sql({"classpath:/resources/sqls/pista.sql"})
+	@Sql({"classpath:/resources/sqls/campeonato.sql"})
+	@Sql({"classpath:/resources/sqls/corrida.sql"})
+    void findByTrackTest() {
+		var lista = raceService.findByTrack(trackService.findById(1));
+        assertEquals(1, lista.size());
+        var exception = assertThrows(ObjectNotFound.class, () -> raceService.findByTrack(trackService.findById(6)));
+        assertEquals("A pista 6 não existe", exception.getMessage());
+        var exception2 = assertThrows(ObjectNotFound.class, () -> raceService.findByTrack(trackService.findById(3)));
+        assertEquals("Nenhuma corrida encontrada para a pista 3", exception2.getMessage());
+    }
+	
+	@Test
+    @DisplayName("Teste buscar corridas por campeonato")
+	@Sql({"classpath:/resources/sqls/pais.sql"})
+	@Sql({"classpath:/resources/sqls/pista.sql"})
+	@Sql({"classpath:/resources/sqls/campeonato.sql"})
+	@Sql({"classpath:/resources/sqls/corrida.sql"})
+    void findByChampionshipTest() {
+		var lista = raceService.findByChampionship(championshipService.findById(1));
+        assertEquals(1, lista.size());
+        var exception = assertThrows(ObjectNotFound.class, () -> raceService.findByChampionship(championshipService.findById(6)));
+        assertEquals("O campeonato 6 não existe", exception.getMessage());
+        var exception2 = assertThrows(ObjectNotFound.class, () -> raceService.findByChampionship(championshipService.findById(3)));
+        assertEquals("Nenhuma corrida encontrada para o campeonato 3", exception2.getMessage());
     }
     
-    @Test
-    @DisplayName("Teste buscar raceo por letra que começa errada")
-    @Sql({"classpath:/resources/sqls/raceo.sql"})
-    void findByNameStartingWithWrongTest() {
-        var lista = raceService.findByNameStartingWithIgnoreCase("t");
-        assertEquals(2, lista.size());
-        var exception = assertThrows(ObjectNotFound.class, () -> raceService.findByNameStartingWithIgnoreCase("z"));
-        assertEquals("Nenhum nome de raceo inicia com z cadastrado", exception.getMessage());
-    }
-    
-    @Test
-    @DisplayName("Teste inserir raceo")
-    void insertRaceTest() {
-        Race raceo = new Race(null, "insert");
-        raceService.insert(raceo);
-        raceo = raceService.findById(raceo.getId());
-        assertEquals(1, raceo.getId());
-        assertEquals("insert", raceo.getName());
-    }
-    
-    @Test
-    @DisplayName("Teste apagar raceo")
-    @Sql({"classpath:/resources/sqls/raceo.sql"})
-    void deleteByIdTest() {
-        raceService.delete(1);
-        List<Race> list = raceService.listAll();
-        assertEquals(1, list.size());
-    }
-    
-    @Test
-    @DisplayName("Teste apagar raceo inexistente")
-    @Sql({"classpath:/resources/sqls/raceo.sql"})
-    void deleteByIdNonExistsTest() {
-        var exception = assertThrows(ObjectNotFound.class,() -> raceService.delete(10));
-        assertEquals("O raceo 10 não existe", exception.getMessage());
-    }
-    
-    @Test
-    @DisplayName("Teste alterar raceo inexistente")
-    @Sql({"classpath:/resources/sqls/raceo.sql"})
-    void updateRaceNonExistsTest() {
-    	Race raceo = new Race(20, "update");
-    	var exception = assertThrows(ObjectNotFound.class,() -> raceService.update(raceo));
-        assertEquals("O raceo 20 não existe", exception.getMessage());
-    }
-    
-    @Test
-    @DisplayName("Teste listar todos sem raceos cadastrados")
-    @Sql({"classpath:/resources/sqls/raceo.sql"})
-    void listAllNonExistsRaceTest() {
-    	raceService.delete(1);
-    	raceService.delete(2);
-    	var exception = assertThrows(ObjectNotFound.class,() -> raceService.listAll());
-        assertEquals("Nenhum raceo cadastrado", exception.getMessage());
-    }
-    
-    @Test
-    @DisplayName("Teste inserir raceo com nome duplicado")
-    @Sql({"classpath:/resources/sqls/raceo.sql"})
-    void insertRaceTimeDuplicateTest() {
-        Race raceo = new Race(null, "Time 1");
-        var exception = assertThrows(IntegrityViolation.class,() -> raceService.insert(raceo));
-        assertEquals("Nome já existente: Time 1", exception.getMessage());
- 
-    }
-    
-    @Test
-    @DisplayName("Teste alterar raceo com nome duplicado")
-    @Sql({"classpath:/resources/sqls/raceo.sql"})
-    void updateRaceTimeWrongTest() {
-    	Race raceo = new Race(2, "Time 1");
-        var exception = assertThrows(IntegrityViolation.class, () -> raceService.update(raceo));
-        assertEquals("Nome já existente: Time 1", exception.getMessage());
-    }
-    
-    @Test
-    @DisplayName("Teste alterar raceo")
-    @Sql({"classpath:/resources/sqls/raceo.sql"})
-    void updateRaceTest() {
-        Race raceo = new Race(1, "update");
-        raceService.update(raceo);
-        assertEquals(1, raceo.getId());
-        assertEquals("update", raceo.getName());
-    }
-    
-    @Test
-    @DisplayName("Teste listar todos")
-    @Sql({"classpath:/resources/sqls/raceo.sql"})
-    void listAllTest() {
-    	List<Race> lista = raceService.listAll();
-    	assertEquals(2, lista.size());
-    }
+	
+	
+	
+	
+	
+	
+	
+	
 }

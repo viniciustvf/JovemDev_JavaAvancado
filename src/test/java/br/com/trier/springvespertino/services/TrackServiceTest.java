@@ -60,7 +60,7 @@ public class TrackServiceTest extends BaseTests {
         assertEquals(1, pista.getId());
         assertEquals("monaco", pista.getName());
         assertEquals(6000, pista.getSize());
-        assertEquals(1, pista.getCountry().getId());
+        assertEquals(2, pista.getCountry().getId());
         assertEquals("País 3", pista.getCountry().getName());
         Track pista2 = new Track(null, "monaco", 0, country);
         var exception2 = assertThrows(IntegrityViolation.class,() -> trackService.insert(pista2));
@@ -73,7 +73,7 @@ public class TrackServiceTest extends BaseTests {
 	@Sql({"classpath:/resources/sqls/pista.sql"})
     void listAllTest() {
     	List<Track> lista = trackService.listAll();
-    	assertEquals(2, lista.size());
+    	assertEquals(3, lista.size());
     }
     
     @Test
@@ -105,7 +105,7 @@ public class TrackServiceTest extends BaseTests {
     void deleteByIdTest() {
         trackService.delete(1);
         List<Track> list = trackService.listAll();
-        assertEquals(1, list.size());
+        assertEquals(2, list.size());
         var exception = assertThrows(ObjectNotFound.class,() -> trackService.delete(10));
         assertEquals("A pista 10 não existe", exception.getMessage()); 
     }
@@ -116,7 +116,7 @@ public class TrackServiceTest extends BaseTests {
 	@Sql({"classpath:/resources/sqls/pista.sql"})
     void findByNameIgnoreCaseWrongTest() {
         var lista = trackService.findByNameStartingWithIgnoreCase("p");
-        assertEquals(2, lista.size());
+        assertEquals(3, lista.size());
         var exception = assertThrows(ObjectNotFound.class, () -> trackService.findByNameStartingWithIgnoreCase("z"));
         assertEquals("Nenhuma pista cadastrada com z", exception.getMessage());
     }
@@ -127,7 +127,7 @@ public class TrackServiceTest extends BaseTests {
 	@Sql({"classpath:/resources/sqls/pista.sql"})
     void findByYearBetweenTest() {
         var lista = trackService.findBySizeBetween(2000, 6000);
-        assertEquals(2, lista.size());
+        assertEquals(3, lista.size());
         var exception = assertThrows(ObjectNotFound.class, () -> trackService.findBySizeBetween(500, 600));
         assertEquals("Nenhuma pista cadastrada entre 500 e 600 metros", exception.getMessage());
     }

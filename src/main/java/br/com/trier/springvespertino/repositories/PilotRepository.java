@@ -18,10 +18,6 @@ public interface PilotRepository extends JpaRepository<Pilot, Integer>{
 	
 	List<Pilot> findByCountry(Country country);
 	
-	List<Pilot> findByCountryStatingWithIgnoreCase(Country country);
-	
 	List<Pilot> findByTeam(Team team);
-	
-	List<Pilot> findByTeamStatingWithIgnoreCase(Team team);
 	
 }

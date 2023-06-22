@@ -23,9 +23,5 @@ public interface RaceService {
 	
 	List<Race> findByTrack(Track track);
 	
-	List<Race> findByTrackStartingWithIgnoreCaseOrderByDesc(Track track);
-	
 	List<Race> findByChampionship(Championship champ);
-	
-	List<Race> findByChampionshipStartingWithIgnoreCaseOrderByDesc(Championship champ);
 }

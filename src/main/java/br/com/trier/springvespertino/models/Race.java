@@ -1,13 +1,13 @@
 package br.com.trier.springvespertino.models;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -30,7 +30,8 @@ public class Race {
 	private Integer id;
 
 	@Column(name = "date_race")
-	private ZonedDateTime date = ZonedDateTime.parse("dd/MM/yyyy", ZonedDateTimeFormatter.ofPattern("dd/MM/yyyy"));;
+	private ZonedDateTime date;
+	
 
 	@ManyToOne
 	private Track track;

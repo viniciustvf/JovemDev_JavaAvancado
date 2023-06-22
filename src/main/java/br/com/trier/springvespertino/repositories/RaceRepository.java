@@ -17,10 +17,6 @@ public interface RaceRepository extends JpaRepository<Race, Integer>{
 	
 	List<Race> findByTrack(Track track);
 	
-	List<Race> findByTrackStartingWithIgnoreCaseOrderByDesc(Track track);
-	
 	List<Race> findByChampionship(Championship champ);
-	
-	List<Race> findByChampionshipStartingWithIgnoreCaseOrderByDesc(Championship champ);
 	
 }

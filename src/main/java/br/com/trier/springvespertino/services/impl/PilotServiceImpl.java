@@ -76,15 +76,6 @@ public class PilotServiceImpl implements PilotService {
 	}
 
 	@Override
-	public List<Pilot> findByCountryStatingWithIgnoreCase(Country country) {
-		List<Pilot> lista = repository.findByCountry(country);
-		if (lista.isEmpty()) {	
-			throw new ObjectNotFound("Nenhum piloto encontrado para o país %s".formatted(country));
-		}
-		return lista;
-	}
-
-	@Override
 	public List<Pilot> findByTeam(Team team) {
 		List<Pilot> lista = repository.findByTeam(team);
 		if (lista.isEmpty()) {	
@@ -92,14 +83,4 @@ public class PilotServiceImpl implements PilotService {
 		}
 		return lista;
 	}
-
-	@Override
-	public List<Pilot> findByTeamStatingWithIgnoreCase(Team team) {
-		List<Pilot> lista = repository.findByTeam(team);
-		if (lista.isEmpty()) {	
-			throw new ObjectNotFound("Nenhum piloto encontrado para o time %s".formatted(team));
-		}
-		return lista;
-	}
-	
 }

@@ -20,8 +20,14 @@ public class RaceServiceImpl implements RaceService {
 	@Autowired
 	RaceRepository repository;
 	
+	private void validateeRace(Race race) {
+		if (true) {
+			throw new IntegrityViolation("A data da corrida deve corresponder ao ano do campeonato");
+		}
+	}
+	
 	private void validateRace(Race race) {
-		if (!race.getChampionship().getYear().equals(race.getDate().getYear())) {
+		if (true) {
 			throw new IntegrityViolation("A data da corrida deve corresponder ao ano do campeonato");
 		}
 	}
@@ -71,37 +77,19 @@ public class RaceServiceImpl implements RaceService {
 	public List<Race> findByTrack(Track track) {
 		List<Race> lista = repository.findByTrack(track);
 		if (lista.isEmpty()) {	
-			throw new ObjectNotFound("Nenhuma corrida encontrada para a pista %s".formatted(track));
+			throw new ObjectNotFound("Nenhuma corrida encontrada para a pista %s".formatted(track.getId()));
 		}
 		return lista;
 	}
 
-	@Override
-	public List<Race> findByTrackStartingWithIgnoreCaseOrderByDesc(Track track) {
-		List<Race> lista = repository.findByTrack(track);
-		if (lista.isEmpty()) {	
-			throw new ObjectNotFound("Nenhuma corrida encontrada para a pista %s".formatted(track));
-		}
-		return lista;
-	}
 
 	@Override
 	public List<Race> findByChampionship(Championship champ) {
 		List<Race> lista = repository.findByChampionship(champ);
 		if (lista.isEmpty()) {	
-			throw new ObjectNotFound("Nenhuma corrida encontrada para o campeonato %s".formatted(champ));
+			throw new ObjectNotFound("Nenhuma corrida encontrada para o campeonato %s".formatted(champ.getId()));
 		}
 		return lista;
 	}
-
-	@Override
-	public List<Race> findByChampionshipStartingWithIgnoreCaseOrderByDesc(Championship champ) {
-		List<Race> lista = repository.findByChampionship(champ);
-		if (lista.isEmpty()) {	
-			throw new ObjectNotFound("Nenhuma corrida encontrada para o campeonato %s".formatted(champ));
-		}
-		return lista;
-	}
-
 	
 }

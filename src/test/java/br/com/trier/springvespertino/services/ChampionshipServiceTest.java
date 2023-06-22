@@ -57,7 +57,7 @@ public class ChampionshipServiceTest extends BaseTests {
     @Sql({"classpath:/resources/sqls/campeonato.sql"})
     void findByDescriptionStartingWithWrongTest() {
         var lista = championshipService.findByDescriptionStartingWithIgnoreCase("c");
-        assertEquals(2, lista.size());
+        assertEquals(3, lista.size());
         var exception = assertThrows(ObjectNotFound.class, () -> championshipService.findByDescriptionStartingWithIgnoreCase("z"));
         assertEquals("Nenhum campeonato inicia com z cadastrado", exception.getMessage());
     }
@@ -78,7 +78,7 @@ public class ChampionshipServiceTest extends BaseTests {
     void deleteByIdTest() {
         championshipService.delete(1);
         List<Championship> list = championshipService.listAll();
-        assertEquals(1, list.size());
+        assertEquals(2, list.size());
     }
     
     @Test
@@ -100,10 +100,7 @@ public class ChampionshipServiceTest extends BaseTests {
     
     @Test
     @DisplayName("Teste listar todos sem campeonato cadastrados")
-    @Sql({"classpath:/resources/sqls/campeonato.sql"})
     void listAllNonExistsChampionshipTest() {
-    	championshipService.delete(1);
-    	championshipService.delete(2);
     	var exception = assertThrows(ObjectNotFound.class,() -> championshipService.listAll());
         assertEquals("Nenhum campeonato cadastrado", exception.getMessage());
     }
@@ -136,7 +133,7 @@ public class ChampionshipServiceTest extends BaseTests {
     @Sql({"classpath:/resources/sqls/campeonato.sql"})
     void listAllTest() {
     	List<Championship> lista = championshipService.listAll();
-    	assertEquals(2, lista.size());
+    	assertEquals(3, lista.size());
     }
     
     @Test
@@ -156,7 +153,7 @@ public class ChampionshipServiceTest extends BaseTests {
     @Sql({"classpath:/resources/sqls/campeonato.sql"})
     void findByYearBetweenTest() {
         var lista = championshipService.findByYearBetween(2010, 2024);
-        assertEquals(2, lista.size());
+        assertEquals(3, lista.size());
         var exception = assertThrows(IntegrityViolation.class, () -> championshipService.findByYearBetween(2030, 1989));
         assertEquals("Ano deve ser maior que 1990 e menor que %s".formatted(LocalDateTime.now().plusYears(1).getYear()), exception.getMessage());
         var exception2 = assertThrows(IntegrityViolation.class, () -> championshipService.findByYearBetween(null, null));
