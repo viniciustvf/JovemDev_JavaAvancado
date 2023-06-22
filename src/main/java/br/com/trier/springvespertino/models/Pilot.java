@@ -1,7 +1,5 @@
 package br.com.trier.springvespertino.models;
 
-import java.time.ZonedDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,22 +19,22 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode (of = "id")
-@Entity(name = "race")
-public class Race {
+@Entity(name = "pilot")
+public class Pilot {
 
 	@Setter
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_race")
+	@Column(name = "id_pilot")
 	private Integer id;
 
-	@Column(name = "date_race")
-	private ZonedDateTime date = ZonedDateTime.parse("dd/MM/yyyy", ZonedDateTimeFormatter.ofPattern("dd/MM/yyyy"));;
+	@Column(name = "name_pilot")
+	private String name;
 
 	@ManyToOne
-	private Track track;
+	private Country country;
 
 	@ManyToOne
-	private Championship championship;
+	private Team team;
 
 }

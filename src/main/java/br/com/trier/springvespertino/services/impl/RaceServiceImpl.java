@@ -60,32 +60,47 @@ public class RaceServiceImpl implements RaceService {
 
 	@Override
 	public List<Race> findByDate(ZonedDateTime date) {
-		if (date == null) {	
-			throw new (IntegrityViolation)
+		List<Race> lista = repository.findByDate(date);
+		if (lista.isEmpty()) {	
+			throw new ObjectNotFound("Nenhuma corrida encontrada para a data %s".formatted(date));
 		}
+		return lista;
+	}	
 
 	@Override
 	public List<Race> findByTrack(Track track) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Race> lista = repository.findByTrack(track);
+		if (lista.isEmpty()) {	
+			throw new ObjectNotFound("Nenhuma corrida encontrada para a pista %s".formatted(track));
+		}
+		return lista;
 	}
 
 	@Override
 	public List<Race> findByTrackStartingWithIgnoreCaseOrderByDesc(Track track) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Race> lista = repository.findByTrack(track);
+		if (lista.isEmpty()) {	
+			throw new ObjectNotFound("Nenhuma corrida encontrada para a pista %s".formatted(track));
+		}
+		return lista;
 	}
 
 	@Override
 	public List<Race> findByChampionship(Championship champ) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Race> lista = repository.findByChampionship(champ);
+		if (lista.isEmpty()) {	
+			throw new ObjectNotFound("Nenhuma corrida encontrada para o campeonato %s".formatted(champ));
+		}
+		return lista;
 	}
 
 	@Override
 	public List<Race> findByChampionshipStartingWithIgnoreCaseOrderByDesc(Championship champ) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Race> lista = repository.findByChampionship(champ);
+		if (lista.isEmpty()) {	
+			throw new ObjectNotFound("Nenhuma corrida encontrada para o campeonato %s".formatted(champ));
+		}
+		return lista;
 	}
 
 	
