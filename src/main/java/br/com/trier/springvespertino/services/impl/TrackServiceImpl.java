@@ -69,7 +69,7 @@ public class TrackServiceImpl implements TrackService {
 	public List<Track> findBySizeBetween(Integer sizeIn, Integer sizeFin) {
 		List<Track> lista = repository.findBySizeBetween(sizeIn, sizeFin);
 		if ( lista.isEmpty() ) {
-			throw new ObjectNotFound("Nenhuma pista cadastrada entre %s e %s metros".formatted(sizeIn, sizeFin));
+			throw new ObjectNotFound("Nenhuma pista cadastrada entre %s e %s metros".formatted(sizeIn, sizeFin)); 
 		}
 		return lista;
 	}

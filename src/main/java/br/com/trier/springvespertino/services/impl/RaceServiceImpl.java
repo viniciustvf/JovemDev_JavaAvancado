@@ -20,14 +20,14 @@ public class RaceServiceImpl implements RaceService {
 	@Autowired
 	RaceRepository repository;
 	
-	private void validateeRace(Race race) {
-		if (true) {
-			throw new IntegrityViolation("A data da corrida deve corresponder ao ano do campeonato");
-		}
-	}
-	
 	private void validateRace(Race race) {
-		if (true) {
+		if(race.getChampionship() == null) {
+			throw new IntegrityViolation("O campeonato não pode ser nulo");
+		}
+		if(race.getTrack() == null) {
+			throw new IntegrityViolation("A pista não pode ser nula");
+		}
+		if (!race.getChampionship().getYear().equals(race.getDate().getYear())) {
 			throw new IntegrityViolation("A data da corrida deve corresponder ao ano do campeonato");
 		}
 	}

@@ -35,7 +35,7 @@ public class User {
 	private String password;
 	
 	public User (UserDTO dto) {
-		this(dto.getId(), dto.getName(), dto.getEmail(), dto.getPassword());
+		this(dto.getId(), dto.getName(), dto.getEmail(), dto.getPassword()); 
 	}
 	
 	public UserDTO toDTO() {

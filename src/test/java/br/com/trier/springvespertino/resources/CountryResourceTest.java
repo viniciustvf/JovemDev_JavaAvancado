@@ -134,7 +134,7 @@ public class CountryResourceTest {
 		ResponseEntity<List<Country>> response = getCountrys("/country/name-starting/p");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
 		List<Country> country = response.getBody();
-		assertEquals(2, country.size());
+		assertEquals(3, country.size());
 
 		ResponseEntity<Country> response2 = getCountry("/country/name-starting/z");
 	    assertEquals(response2.getStatusCode(), HttpStatus.NOT_FOUND);

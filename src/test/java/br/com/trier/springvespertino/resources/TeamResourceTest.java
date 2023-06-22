@@ -137,7 +137,7 @@ public class TeamResourceTest {
 		ResponseEntity<List<Team>> response = getTeams("/team/name-starting/t");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
 		List<Team> team = response.getBody();
-		assertEquals(2, team.size());
+		assertEquals(3, team.size());
 
 		ResponseEntity<Team> response2 = getTeam("/team/name-starting/z");
 	    assertEquals(response2.getStatusCode(), HttpStatus.NOT_FOUND);

@@ -56,7 +56,7 @@ public class TeamServiceTest extends BaseTests {
     @Sql({"classpath:/resources/sqls/time.sql"})
     void findByNameStartingWithWrongTest() {
         var lista = teamService.findByNameStartingWithIgnoreCase("t");
-        assertEquals(2, lista.size());
+        assertEquals(3, lista.size());
         var exception = assertThrows(ObjectNotFound.class, () -> teamService.findByNameStartingWithIgnoreCase("z"));
         assertEquals("Nenhum nome de time inicia com z cadastrado", exception.getMessage());
     }
@@ -77,7 +77,7 @@ public class TeamServiceTest extends BaseTests {
     void deleteByIdTest() {
         teamService.delete(1);
         List<Team> list = teamService.listAll();
-        assertEquals(1, list.size());
+        assertEquals(2, list.size());
     }
     
     @Test
@@ -103,6 +103,7 @@ public class TeamServiceTest extends BaseTests {
     void listAllNonExistsTeamTest() {
     	teamService.delete(1);
     	teamService.delete(2);
+    	teamService.delete(3);
     	var exception = assertThrows(ObjectNotFound.class,() -> teamService.listAll());
         assertEquals("Nenhum time cadastrado", exception.getMessage());
     }
@@ -141,6 +142,6 @@ public class TeamServiceTest extends BaseTests {
     @Sql({"classpath:/resources/sqls/time.sql"})
     void listAllTest() {
     	List<Team> lista = teamService.listAll();
-    	assertEquals(2, lista.size());
+    	assertEquals(3, lista.size());
     }
 }

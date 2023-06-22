@@ -165,7 +165,7 @@ public class ChampionshipResourceTest {
 		ResponseEntity<List<Championship>> response = getChampionships("/championship/description-starting/c");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
 		List<Championship> championship = response.getBody();
-		assertEquals(2, championship.size());
+		assertEquals(3, championship.size());
 
 		ResponseEntity<Championship> response2 = getChampionship("/championship/description-starting/z");
 	    assertEquals(response2.getStatusCode(), HttpStatus.NOT_FOUND);

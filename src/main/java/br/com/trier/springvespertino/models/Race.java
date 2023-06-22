@@ -3,6 +3,8 @@ package br.com.trier.springvespertino.models;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import br.com.trier.springvespertino.models.dto.RaceDTO;
+import br.com.trier.springvespertino.utils.DateUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,5 +40,16 @@ public class Race {
 
 	@ManyToOne
 	private Championship championship;
-
+	
+	public Race (RaceDTO dto, Championship championship, Track track) {
+		this(dto.getId(), DateUtils.strToZonedDateTime(dto.getDate()), track, championship);
+	}
+	
+	public RaceDTO toDTO() {
+	    return new RaceDTO(id, DateUtils.zonedDateTimeToStr(date),
+	            track.getId(),
+	            track.getName(),
+	            championship.getId(),
+	            championship.getDescription());
+	}
 }
