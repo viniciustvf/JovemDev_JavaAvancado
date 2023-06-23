@@ -33,7 +33,6 @@ public class Race {
 
 	@Column(name = "date_race")
 	private ZonedDateTime date;
-	
 
 	@ManyToOne
 	private Track track;

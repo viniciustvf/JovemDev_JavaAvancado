@@ -27,8 +27,7 @@ public class UserServiceImpl implements UserService{
  
 	@Override
 	public User findById(Integer id) {
-		Optional<User> user = repository.findById(id);
-		return user.orElseThrow(() -> new ObjectNotFound("O usuário %s não existe".formatted(id)));
+		return repository.findById(id).orElseThrow(() -> new ObjectNotFound("O usuário %s não existe".formatted(id)));
 	}
 
 	@Override

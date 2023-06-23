@@ -25,8 +25,8 @@ public class UserResource {
 	private UserService service;
 	
 	@PostMapping
-	public ResponseEntity<UserDTO> insert (@RequestBody UserDTO user) {
-		return ResponseEntity.ok(service.insert(new User(user)).toDTO());
+	public ResponseEntity<UserDTO> insert (@RequestBody UserDTO userDTO) {
+		return ResponseEntity.ok(service.insert(new User(userDTO)).toDTO());
 	}
 	
 	@GetMapping("/{id}")

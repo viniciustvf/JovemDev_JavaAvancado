@@ -39,11 +39,7 @@ public class User {
 	}
 	
 	public UserDTO toDTO() {
-		return new UserDTO(id, name, email, password);
+		return new UserDTO(id, name, email, password); 
 	}
-	
-	
-	
-	
-	
+
 }

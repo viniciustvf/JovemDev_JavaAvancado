@@ -210,7 +210,7 @@ public class ChampionshipResourceTest {
 		assertEquals(2, champ.size());
 
 		ResponseEntity<Championship> response2 = getChampionship("/championship/year-between/2013/2025");
-	    assertEquals(HttpStatus.BAD_REQUEST, response2.getStatusCode()); 
+	    assertEquals(HttpStatus.BAD_REQUEST, response2.getStatusCode());  
 	}
 	
 	

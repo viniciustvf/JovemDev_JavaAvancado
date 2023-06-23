@@ -2,12 +2,8 @@ package br.com.trier.springvespertino.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -17,8 +13,6 @@ import org.springframework.test.context.jdbc.Sql;
 
 import br.com.trier.springvespertino.BaseTests;
 import br.com.trier.springvespertino.models.Pilot;
-import br.com.trier.springvespertino.models.Race;
-import br.com.trier.springvespertino.models.Team;
 import br.com.trier.springvespertino.services.exceptions.ObjectNotFound;
 import br.com.trier.springvespertino.services.exceptions.IntegrityViolation;
 import jakarta.transaction.Transactional;
