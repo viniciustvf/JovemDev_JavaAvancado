@@ -39,27 +39,27 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public List<Team> listAll() {
-		List<Team> lista = repository.findAll();
-		if ( lista.isEmpty() ) {
-			throw new ObjectNotFound("Nenhum time cadastrado");
-		}
-		return lista;
-	}
-
-	@Override
 	public Team update(Team team) {
 		findById(team.getId());
 		isTeamNameUnique(team);
 		return repository.save(team);
 	}
-
+	
 	@Override
 	public void delete(Integer id) {
 		Team team = findById(id);	
 		if (team != null ) {
 			repository.delete(team);
 		}
+	}
+	
+	@Override
+	public List<Team> listAll() {
+		List<Team> lista = repository.findAll();
+		if ( lista.isEmpty() ) {
+			throw new ObjectNotFound("Nenhum time cadastrado");
+		}
+		return lista;
 	}
 
 	@Override
@@ -79,5 +79,4 @@ public class TeamServiceImpl implements TeamService {
 		}
 		return lista; 
 	}
-	
 }

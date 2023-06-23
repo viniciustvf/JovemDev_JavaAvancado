@@ -24,19 +24,14 @@ public class UserResource {
 	@Autowired
 	private UserService service;
 	
-	@PostMapping
-	public ResponseEntity<UserDTO> insert (@RequestBody UserDTO userDTO) {
-		return ResponseEntity.ok(service.insert(new User(userDTO)).toDTO());
-	}
-	
 	@GetMapping("/{id}")
 	public ResponseEntity<UserDTO> findById (@PathVariable Integer id) {
 		return ResponseEntity.ok(service.findById(id).toDTO());		  
 	}
 	
-	@GetMapping
-	public ResponseEntity<List<UserDTO>> listAll () {
-		return ResponseEntity.ok(service.listAll().stream().map((user) -> user.toDTO()).toList());	
+	@PostMapping
+	public ResponseEntity<UserDTO> insert (@RequestBody UserDTO userDTO) {
+		return ResponseEntity.ok(service.insert(new User(userDTO)).toDTO());
 	}
 	
 	@PutMapping("/{id}")
@@ -51,6 +46,11 @@ public class UserResource {
 		service.delete(id);
 		return ResponseEntity.noContent().build();		
 	}	
+	
+	@GetMapping
+	public ResponseEntity<List<UserDTO>> listAll () {
+		return ResponseEntity.ok(service.listAll().stream().map((user) -> user.toDTO()).toList());	
+	}
 	
 	@GetMapping("/name-starting/{name}")
 	public ResponseEntity<List<UserDTO>> findByNameStartingWithIgnoreCase(@PathVariable String name) {

@@ -18,13 +18,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode (of = "id")
-@Entity(name = "pista")
+@Entity(name = "track")
 public class Track {
 
 	@Setter 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_pista")
+	@Column(name = "id_track")
 	private Integer id;
 
 	@Column(name = "name_track")

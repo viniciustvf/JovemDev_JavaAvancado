@@ -25,4 +25,5 @@ public interface PilotRaceService {
 	List<PilotRace> findByPilot(Pilot pilot);
 	
 	List<PilotRace> findByRace(Race race);
+	
 }

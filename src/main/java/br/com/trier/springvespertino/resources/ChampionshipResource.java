@@ -23,19 +23,14 @@ public class ChampionshipResource {
 	@Autowired
 	private ChampionshipService service;
 	
-	@PostMapping
-	public ResponseEntity<Championship> insert (@RequestBody Championship championship) {
-		return ResponseEntity.ok(service.insert(championship));
-	}
-	
 	@GetMapping("/{id}")
 	public ResponseEntity<Championship> findById (@PathVariable Integer id) {
 		return ResponseEntity.ok(service.findById(id));		  
 	}
 	
-	@GetMapping
-	public ResponseEntity<List<Championship>> listAll () {
-		return ResponseEntity.ok(service.listAll());	
+	@PostMapping
+	public ResponseEntity<Championship> insert (@RequestBody Championship championship) {
+		return ResponseEntity.ok(service.insert(championship));
 	}
 	
 	@PutMapping("/{id}")
@@ -50,8 +45,13 @@ public class ChampionshipResource {
 		return ResponseEntity.noContent().build();		
 	}	
 	
+	@GetMapping
+	public ResponseEntity<List<Championship>> listAll () {
+		return ResponseEntity.ok(service.listAll());	
+	}
+	
 	@GetMapping("/description/{description}")
-	public ResponseEntity<List<Championship>> findByNameIgnoreCase(@PathVariable String description) {
+	public ResponseEntity<List<Championship>> findByDescriptionIgnoreCase(@PathVariable String description) {
 		return ResponseEntity.ok(service.findByDescriptionIgnoreCase(description));		
 	}
 	

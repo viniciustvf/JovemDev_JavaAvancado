@@ -18,5 +18,4 @@ public interface ChampionshipRepository extends JpaRepository<Championship, Inte
 	
 	List<Championship>findByYearBetween(Integer initialYear, Integer finallYear);
 	
-	
 }

@@ -37,25 +37,25 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	public User update(User user) {
+		findById(user.getId());
+		findByEmail(user);
+		return repository.save(user);
+	}
+	
+	@Override
+	public void delete(Integer id) {
+		User user = findById(id);
+		repository.delete(user);
+	}
+	
+	@Override
 	public List<User> listAll() {
 		List<User> lista = repository.findAll();
 		if ( lista.isEmpty() ) {
 			throw new ObjectNotFound("Nenhum usuário cadastrado");
 		}
 		return lista;
-	}
-
-	@Override
-	public User update(User user) {
-		findById(user.getId());
-		findByEmail(user);
-		return repository.save(user);
-	}
-
-	@Override
-	public void delete(Integer id) {
-		User user = findById(id);
-		repository.delete(user);
 	}
 
 	@Override
@@ -81,5 +81,4 @@ public class UserServiceImpl implements UserService{
 		Optional<User> user = Optional.ofNullable(repository.findByEmail(email));
 		return user.orElseThrow(() ->new ObjectNotFound("Nenhum email de usuário %s cadastrado".formatted(email))) ;
 	}
-
 }

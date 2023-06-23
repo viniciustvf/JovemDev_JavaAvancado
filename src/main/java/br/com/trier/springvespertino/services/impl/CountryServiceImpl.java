@@ -38,27 +38,27 @@ public class CountryServiceImpl implements CountryService {
 	}
 
 	@Override
-	public List<Country> listAll() {
-		List<Country> lista = repository.findAll();
-		if ( lista.isEmpty() ) {
-			throw new ObjectNotFound("Nenhum pais cadastrado");
-		}
-		return lista;
-	}
-
-	@Override
 	public Country update(Country country) {
 		findById(country.getId());
 		isCountryNameUnique(country);
 		return repository.save(country);
 	}
-
+	
 	@Override
 	public void delete(Integer id) {
 		Country country = findById(id);	
 		if (country != null ) {
 			repository.delete(country);
 		}
+	}
+	
+	@Override
+	public List<Country> listAll() {
+		List<Country> lista = repository.findAll();
+		if ( lista.isEmpty() ) {
+			throw new ObjectNotFound("Nenhum pais cadastrado");
+		}
+		return lista;
 	}
 
 	@Override
@@ -78,5 +78,4 @@ public class CountryServiceImpl implements CountryService {
 		}
 		return lista;
 	}
-	
 }

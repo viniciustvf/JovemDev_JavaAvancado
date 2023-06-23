@@ -44,24 +44,24 @@ public class RaceServiceImpl implements RaceService {
 	}
 
 	@Override
+	public Race update(Race race) {
+		validateRace(race);
+		return repository.save(race);
+	}
+	
+	@Override
+	public void delete(Integer id) {
+		Race race = findById(id);
+		repository.delete(race);
+	}
+	
+	@Override
 	public List<Race> listAll() {
 		List<Race> lista = repository.findAll();
 		if ( lista.isEmpty() ) {
 			throw new ObjectNotFound("Nenhuma corrida cadastrada");
 		}
 		return lista;
-	}
-
-	@Override
-	public Race update(Race race) {
-		validateRace(race);
-		return repository.save(race);
-	}
-
-	@Override
-	public void delete(Integer id) {
-		Race race = findById(id);
-		repository.delete(race);
 	}
 
 	@Override
@@ -91,5 +91,13 @@ public class RaceServiceImpl implements RaceService {
 		}
 		return lista;
 	}
-	
+
+	@Override
+	public List<Race> findByDateContainsYear(Integer year) {
+		List<Race> lista = repository.findByDateContainsYear(year);
+		if (lista.isEmpty()) {	
+			throw new ObjectNotFound("Nenhuma corrida encontrada para o ano %s".formatted(year));
+		}
+		return lista;
+	}
 }

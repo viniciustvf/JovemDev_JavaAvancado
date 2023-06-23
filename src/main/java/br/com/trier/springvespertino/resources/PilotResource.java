@@ -37,22 +37,17 @@ public class PilotResource {
 	@Autowired
 	private TeamService teamService;
 	
+	@GetMapping("/{id}")
+	public ResponseEntity<PilotDTO> findById (@PathVariable Integer id) {
+		return ResponseEntity.ok(service.findById(id).toDTO());		  
+	}
+	
 	@PostMapping
 	public ResponseEntity<PilotDTO> insert (@RequestBody PilotDTO pilotDTO) {
 		Pilot pilot = new Pilot(pilotDTO, countryService.findById(pilotDTO.getCountryId()), teamService.findById(pilotDTO.getTeamId()));
 		return ResponseEntity.ok(service.insert(pilot).toDTO());
 	}
 	
-	@GetMapping("/{id}")
-	public ResponseEntity<PilotDTO> findById (@PathVariable Integer id) {
-		return ResponseEntity.ok(service.findById(id).toDTO());		  
-	}
-	
-	@GetMapping
-	public ResponseEntity<List<PilotDTO>> listAll () {
-		return ResponseEntity.ok(service.listAll().stream().map((pilot) -> pilot.toDTO()).toList());
-	}
-	 
 	@PutMapping("/{id}")
 	public ResponseEntity<PilotDTO> update (@PathVariable Integer id, @RequestBody PilotDTO pilotDTO) {
 		Pilot pilot = new Pilot(pilotDTO, countryService.findById(pilotDTO.getCountryId()), teamService.findById(pilotDTO.getTeamId()));
@@ -65,7 +60,12 @@ public class PilotResource {
 		service.delete(id);
 		return ResponseEntity.noContent().build();		
 	}	
-	 
+	
+	@GetMapping
+	public ResponseEntity<List<PilotDTO>> listAll () {
+		return ResponseEntity.ok(service.listAll().stream().map((pilot) -> pilot.toDTO()).toList());
+	}
+	  
 	@GetMapping("/name/{name}")
 	public ResponseEntity<List<PilotDTO>> findByName(@PathVariable String name) {
 		List<Pilot> lista = service.findByName(name);

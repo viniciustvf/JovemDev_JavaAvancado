@@ -42,25 +42,25 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 	}
 
 	@Override
+	public Championship update(Championship championship) {
+		findById(championship.getId());
+		validateYearChampionship(championship.getYear());
+		return repository.save(championship);
+	}
+	
+	@Override
+	public void delete(Integer id) {
+		Championship championship = findById(id);	
+		repository.delete(championship);
+	}
+	
+	@Override
 	public List<Championship> listAll() {
 		List<Championship> lista = repository.findAll();
 		if ( lista.isEmpty() ) {
 			throw new ObjectNotFound("Nenhum campeonato cadastrado");
 		}
 		return lista;
-	}
-
-	@Override
-	public Championship update(Championship championship) {
-		findById(championship.getId());
-		validateYearChampionship(championship.getYear());
-		return repository.save(championship);
-	}
-
-	@Override
-	public void delete(Integer id) {
-		Championship championship = findById(id);	
-		repository.delete(championship);
 	}
 
 	@Override
@@ -101,5 +101,4 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 		}
 		return championship;
 	}
-	
 }

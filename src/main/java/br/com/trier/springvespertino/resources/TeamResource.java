@@ -23,19 +23,15 @@ public class TeamResource {
 	@Autowired
 	private TeamService service;
 	
-	@PostMapping
-	public ResponseEntity<Team> insert (@RequestBody Team team) {
-		return ResponseEntity.ok(service.insert(team));
-	}
-	
 	@GetMapping("/{id}")
 	public ResponseEntity<Team> findById (@PathVariable Integer id) {
 		return ResponseEntity.ok(service.findById(id));		  
 	}
 	
-	@GetMapping
-	public ResponseEntity<List<Team>> listAll () {
-		return ResponseEntity.ok(service.listAll());	
+	
+	@PostMapping
+	public ResponseEntity<Team> insert (@RequestBody Team team) {
+		return ResponseEntity.ok(service.insert(team));
 	}
 	
 	@PutMapping("/{id}")
@@ -49,6 +45,11 @@ public class TeamResource {
 		service.delete(id);
 		return ResponseEntity.noContent().build();		
 	}	
+	
+	@GetMapping
+	public ResponseEntity<List<Team>> listAll () {
+		return ResponseEntity.ok(service.listAll());	
+	}
 	
 	@GetMapping("/name-starting/{name}")
 	public ResponseEntity<List<Team>> findByNameStartingWithIgnoreCase(@PathVariable String name) {

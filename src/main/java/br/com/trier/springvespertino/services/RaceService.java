@@ -3,6 +3,8 @@ package br.com.trier.springvespertino.services;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import org.springframework.data.repository.query.Param;
+
 import br.com.trier.springvespertino.models.Championship;
 import br.com.trier.springvespertino.models.Race;
 import br.com.trier.springvespertino.models.Track;
@@ -24,4 +26,7 @@ public interface RaceService {
 	List<Race> findByTrack(Track track);
 	
 	List<Race> findByChampionship(Championship champ);
+	
+	List<Race> findByDateContainsYear(Integer year);
+	
 }

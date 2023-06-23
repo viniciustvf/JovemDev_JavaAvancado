@@ -43,25 +43,25 @@ public class PilotRaceServiceImpl implements PilotRaceService{
 	}
 
 	@Override
+	public PilotRace update(PilotRace pilotRace) {
+		findById(pilotRace.getId());
+		validatePilotRace(pilotRace);
+		return repository.save(pilotRace);
+	}
+	
+	@Override
+	public void delete(Integer id) {
+		PilotRace pilotRace = findById(id);
+		repository.delete(pilotRace);
+	}
+	
+	@Override
 	public List<PilotRace> listAll() {
 		List<PilotRace> lista = repository.findAll();
 		if ( lista.isEmpty() ) {
 			throw new ObjectNotFound("Nenhum piloto corrida cadastrado");
 		}
 		return lista;
-	}
-
-	@Override
-	public PilotRace update(PilotRace pilotRace) {
-		findById(pilotRace.getId());
-		validatePilotRace(pilotRace);
-		return repository.save(pilotRace);
-	}
-
-	@Override
-	public void delete(Integer id) {
-		PilotRace pilotRace = findById(id);
-		repository.delete(pilotRace);
 	}
 
 	@Override
@@ -99,5 +99,4 @@ public class PilotRaceServiceImpl implements PilotRaceService{
 		}
 		return lista;
 	}
-
 }

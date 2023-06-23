@@ -35,20 +35,15 @@ public class RaceResource {
 	@Autowired
 	private ChampionshipService championshipService;
 	
-	@PostMapping
-	public ResponseEntity<RaceDTO> insert (@RequestBody RaceDTO raceDTO) {
-		Race race = new Race(raceDTO, championshipService.findById(raceDTO.getChampionshipId()), trackService.findById(raceDTO.getTrackId()));
-		return ResponseEntity.ok(service.insert(race).toDTO());
-	}
-	
 	@GetMapping("/{id}")
 	public ResponseEntity<RaceDTO> findById (@PathVariable Integer id) {
 		return ResponseEntity.ok(service.findById(id).toDTO());		  
 	}
 	
-	@GetMapping
-	public ResponseEntity<List<RaceDTO>> listAll () {
-		return ResponseEntity.ok(service.listAll().stream().map((race) -> race.toDTO()).toList());
+	@PostMapping
+	public ResponseEntity<RaceDTO> insert (@RequestBody RaceDTO raceDTO) {
+		Race race = new Race(raceDTO, championshipService.findById(raceDTO.getChampionshipId()), trackService.findById(raceDTO.getTrackId()));
+		return ResponseEntity.ok(service.insert(race).toDTO());
 	}
 	
 	@PutMapping("/{id}")
@@ -62,7 +57,12 @@ public class RaceResource {
 	public ResponseEntity<Void> delete (@PathVariable Integer id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();		
-	}	
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<RaceDTO>> listAll () {
+		return ResponseEntity.ok(service.listAll().stream().map((race) -> race.toDTO()).toList());
+	}
 	
 	@GetMapping("/date")
 	public ResponseEntity<List<RaceDTO>> findByDate(@RequestParam String date) {

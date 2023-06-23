@@ -38,11 +38,6 @@ public class TrackResource {
 		return ResponseEntity.ok(service.insert(track));
 	}
 	
-	@GetMapping
-	public ResponseEntity<List<Track>> listAll () {
-		return ResponseEntity.ok(service.listAll());	
-	}
-	
 	@PutMapping("/{id}")
 	public ResponseEntity<Track> update (@PathVariable Integer id, @RequestBody Track track) {
 		track.setId(id);
@@ -55,6 +50,11 @@ public class TrackResource {
 		return ResponseEntity.noContent().build();		
 	}	
 	
+	@GetMapping
+	public ResponseEntity<List<Track>> listAll () {
+		return ResponseEntity.ok(service.listAll());	
+	}
+
 	@GetMapping("/name/{name}")
 	public ResponseEntity<List<Track>> findByNameStartingWithIgnoreCase(@PathVariable String name){
 		return ResponseEntity.ok(service.findByNameStartingWithIgnoreCase(name));
@@ -69,5 +69,4 @@ public class TrackResource {
 	public ResponseEntity<List<Track>> findByCountryOrderBySizeDesc(@PathVariable Integer idCountry){
 		return ResponseEntity.ok(service.findByCountryOrderBySizeDesc(countryService.findById(idCountry)));
 	}
-
 }

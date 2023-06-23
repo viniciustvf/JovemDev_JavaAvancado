@@ -36,24 +36,24 @@ public class TrackServiceImpl implements TrackService {
 	}
 
 	@Override
+	public Track update(Track track) {
+		validateTrack(track);
+		return repository.save(track);
+	}
+	
+	@Override
+	public void delete(Integer id) {
+		Track track = findById(id);
+		repository.delete(track);
+	}
+	
+	@Override
 	public List<Track> listAll() {
 		List<Track> lista = repository.findAll();
 		if ( lista.isEmpty() ) {
 			throw new ObjectNotFound("Nenhuma pista cadastrada");
 		}
 		return lista;
-	}
-
-	@Override
-	public Track update(Track track) {
-		validateTrack(track);
-		return repository.save(track);
-	}
-
-	@Override
-	public void delete(Integer id) {
-		Track track = findById(id);
-		repository.delete(track);
 	}
 
 	@Override
@@ -82,5 +82,4 @@ public class TrackServiceImpl implements TrackService {
 		}
 		return lista;
 	}
-
 }
