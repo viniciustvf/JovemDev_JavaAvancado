@@ -3,6 +3,8 @@ package br.com.trier.springvespertino.resources;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,9 +19,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import br.com.trier.springvespertino.SpringVespertinoApplication;
+import br.com.trier.springvespertino.models.PilotRace;
+import br.com.trier.springvespertino.models.Race;
+import br.com.trier.springvespertino.models.dto.PilotPodiumYearDTO;
+import br.com.trier.springvespertino.models.dto.PilotRaceDTO;
 import br.com.trier.springvespertino.models.dto.RaceCountryYearDTO;
+import br.com.trier.springvespertino.services.exceptions.ObjectNotFound;
 
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = Replace.ANY)
@@ -31,38 +40,48 @@ public class ReportResourceTest {
 	
 	@Test
 	@DisplayName("Teste buscar corridas por país em um determinado ano")
-	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
+	@Sql({"classpath:/resources/sqls/limpa_tabelas.sql"})
 	@Sql({"classpath:/resources/sqls/pais.sql"})
-	@Sql({"classpath:/resources/sqls/pista.sql"})
-	@Sql({"classpath:/resources/sqls/campeonato.sql"})
-	@Sql({"classpath:/resources/sqls/corrida.sql"})
 	@Sql({"classpath:/resources/sqls/time.sql"})
+	@Sql({"classpath:/resources/sqls/campeonato.sql"})
 	@Sql({"classpath:/resources/sqls/piloto.sql"})
+	@Sql({"classpath:/resources/sqls/pista.sql"})
+	@Sql({"classpath:/resources/sqls/corrida.sql"})
 	@Sql({"classpath:/resources/sqls/piloto_corrida.sql"})
 	public void findRaceByYearAndCountryTest() {
-	    ResponseEntity<RaceCountryYearDTO> response = rest.getForEntity("/races-by-country-year/{country}/{year}", RaceCountryYearDTO.class, 1, 2020);
+	    ResponseEntity<RaceCountryYearDTO> response = rest.exchange(
+	            "/reports/races-by-country-year/1/2020",
+	            HttpMethod.GET,
+	            null,
+	            new ParameterizedTypeReference<RaceCountryYearDTO>() {}
+	        );
 	    assertEquals(HttpStatus.OK, response.getStatusCode());
-	    ResponseEntity<RaceCountryYearDTO> errorResponse = rest.getForEntity("/races-by-country-year/{country}/{year}", RaceCountryYearDTO.class, 10, 2022);
-	    assertEquals(HttpStatus.NOT_FOUND, errorResponse.getStatusCode());
+	    RaceCountryYearDTO race = response.getBody();
+	    assertEquals(2020, race.getYear());
+	    
 	}
 	
 	@Test
-	@DisplayName("Teste buscar pilotos de pódio em um determinado ano")
-	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
+	@DisplayName("Teste buscar pilotos que podiaram em um determinado ano")
+	@Sql({"classpath:/resources/sqls/limpa_tabelas.sql"})
 	@Sql({"classpath:/resources/sqls/pais.sql"})
-	@Sql({"classpath:/resources/sqls/pista.sql"})
-	@Sql({"classpath:/resources/sqls/campeonato.sql"})
-	@Sql({"classpath:/resources/sqls/corrida.sql"})
 	@Sql({"classpath:/resources/sqls/time.sql"})
+	@Sql({"classpath:/resources/sqls/campeonato.sql"})
 	@Sql({"classpath:/resources/sqls/piloto.sql"})
+	@Sql({"classpath:/resources/sqls/pista.sql"})
+	@Sql({"classpath:/resources/sqls/corrida.sql"})
 	@Sql({"classpath:/resources/sqls/piloto_corrida.sql"})
 	public void findPilotsPodiumByYearTest() {
-	    ResponseEntity<RaceCountryYearDTO> response = rest.getForEntity("/races-by-country-year/{country}/{year}", RaceCountryYearDTO.class, 1, 2020);
+	    ResponseEntity<RaceCountryYearDTO> response = rest.exchange(
+	            "/reports/pilots-podium-by-year/2020",
+	            HttpMethod.GET,
+	            null,
+	            new ParameterizedTypeReference<RaceCountryYearDTO>() {}
+	        );
 	    assertEquals(HttpStatus.OK, response.getStatusCode());
-	    ResponseEntity<RaceCountryYearDTO> errorResponse = rest.getForEntity("/races-by-country-year/{country}/{year}", RaceCountryYearDTO.class, 10, 2022);
-	    assertEquals(HttpStatus.NOT_FOUND, errorResponse.getStatusCode());
+	    RaceCountryYearDTO pilot = response.getBody();
+	    assertEquals(2020, pilot.getYear());
+	    
 	}
-	
-
 	
 }

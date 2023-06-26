@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,9 +28,9 @@ public class UserServiceTest extends BaseTests {
     @DisplayName("Teste buscar usuário por ID")
     @Sql({"classpath:/resources/sqls/usuario.sql"})
     void findByIdTest() {
-        var usuario = userService.findById(1);
+        var usuario = userService.findById(3);
         assertNotNull(usuario);
-        assertEquals(1, usuario.getId());
+        assertEquals(3, usuario.getId());
         assertEquals("User 1", usuario.getName());
         assertEquals("Email 1", usuario.getEmail());
         assertEquals("Senha 1", usuario.getPassword());
@@ -56,7 +57,7 @@ public class UserServiceTest extends BaseTests {
     @Test
     @DisplayName("Teste inserir usuario")
     void insertUserTest() {
-        User usuario = new User(null, "insert", "insert", "insert");
+        User usuario = new User(null, "insert", "insert", "insert", "ADMIN");
         userService.insert(usuario);
         usuario = userService.findById(usuario.getId());
         assertEquals(1, usuario.getId());
@@ -69,7 +70,7 @@ public class UserServiceTest extends BaseTests {
     @DisplayName("Teste apagar usuario")
     @Sql({"classpath:/resources/sqls/usuario.sql"})
     void deleteByIdTest() {
-        userService.delete(1);
+        userService.delete(3);
         List<User> list = userService.listAll();
         assertEquals(1, list.size());
     }
@@ -86,7 +87,7 @@ public class UserServiceTest extends BaseTests {
     @DisplayName("Teste alterar usuario inexistente")
     @Sql({"classpath:/resources/sqls/usuario.sql"})
     void updateUserNonExistsTest() {
-    	User usuario = new User(20, "update", "update", "update");
+    	User usuario = new User(20, "update", "update", "update", "ADMIN");
     	var exception = assertThrows(ObjectNotFound.class,() -> userService.update(usuario));
         assertEquals("O usuário 20 não existe", exception.getMessage());
     }
@@ -95,8 +96,8 @@ public class UserServiceTest extends BaseTests {
     @DisplayName("Teste listar todos sem usuarios cadastrados")
     @Sql({"classpath:/resources/sqls/usuario.sql"})
     void listAllNonExistsUserTest() {
-    	userService.delete(1);
-    	userService.delete(2);
+    	userService.delete(3);
+    	userService.delete(4);
     	var exception = assertThrows(ObjectNotFound.class,() -> userService.listAll());
         assertEquals("Nenhum usuário cadastrado", exception.getMessage());
     }
@@ -105,7 +106,7 @@ public class UserServiceTest extends BaseTests {
     @DisplayName("Teste inserir usuario com email duplicado")
     @Sql({"classpath:/resources/sqls/usuario.sql"})
     void insertUserEmailDuplicateTest() {
-        User usuario = new User(null, "insert", "Email 1", "insert");
+        User usuario = new User(null, "insert", "Email 1", "insert", "ADMIN");
         var exception = assertThrows(IntegrityViolation.class,() -> userService.insert(usuario));
         assertEquals("Email já existente: Email 1", exception.getMessage());
  
@@ -115,7 +116,7 @@ public class UserServiceTest extends BaseTests {
     @DisplayName("Teste alterar usuario com email duplicado")
     @Sql({"classpath:/resources/sqls/usuario.sql"})
     void updateUserEmailWrongTest() {
-    	User usuario = new User(2, "update", "Email 1", "update");
+    	User usuario = new User(4, "update", "Email 1", "update", "ADMIN");
         var exception = assertThrows(IntegrityViolation.class, () -> userService.update(usuario));
         assertEquals("Email já existente: Email 1", exception.getMessage());
     }
@@ -124,9 +125,9 @@ public class UserServiceTest extends BaseTests {
     @DisplayName("Teste alterar usuario")
     @Sql({"classpath:/resources/sqls/usuario.sql"})
     void updateUserTest() {
-        User usuario = new User(1, "update", "update", "update");
+        User usuario = new User(3, "update", "update", "update", "ADMIN");
         userService.update(usuario);
-        assertEquals(1, usuario.getId());
+        assertEquals(3, usuario.getId());
         assertEquals("update", usuario.getName());
         assertEquals("update", usuario.getEmail());
         assertEquals("update", usuario.getPassword());
@@ -154,8 +155,8 @@ public class UserServiceTest extends BaseTests {
     @DisplayName("Teste buscar usuário por email")
     @Sql({"classpath:/resources/sqls/usuario.sql"})
     void findByEmailTest() {
-        User user = userService.findByEmail("Email 1");
-        assertEquals("Email 1", user.getEmail());
+        Optional<User> user = userService.findByEmail("Email 1");
+        assertEquals("Email 1", user.get().getEmail());
         var exception = assertThrows(ObjectNotFound.class,() -> userService.findByEmail("Email 0909"));
         assertEquals("Nenhum email de usuário Email 0909 cadastrado", exception.getMessage());
     }

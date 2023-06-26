@@ -1,6 +1,7 @@
 package br.com.trier.springvespertino.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import br.com.trier.springvespertino.models.User;
 
@@ -20,6 +21,8 @@ public interface UserService {
 	
 	List<User> findByNameStartingWithIgnoreCase(String name);
 	
-	User findByEmail(String email);
+	Optional<User> findByEmail(String email);
+	
+	Optional<User> findByName(String name);
 	
 }

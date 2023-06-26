@@ -52,10 +52,10 @@ public class TeamResourceTest {
 	@DisplayName("Inserir time")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	public void insertTeamTest() {
-		Team dto = new Team(null, "time");
+		Team team = new Team(null, "time");
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<Team> requestEntity = new HttpEntity<>(dto, headers);
+		HttpEntity<Team> requestEntity = new HttpEntity<>(team, headers);
 		ResponseEntity<Team> responseEntity = rest.exchange(
 	            "/team", 
 	            HttpMethod.POST,  
@@ -63,8 +63,8 @@ public class TeamResourceTest {
 	            Team.class   
 	    );
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		Team team = responseEntity.getBody();
-		assertEquals("time", team.getName());
+		Team team2 = responseEntity.getBody();
+		assertEquals("time", team2.getName());
 	}
 	
 	@Test

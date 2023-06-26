@@ -34,12 +34,15 @@ public class User {
 	@Column(name = "password_user")
 	private String password;
 	
+	@Column(name = "permissions_user")
+	private String roles;
+	
 	public User (UserDTO dto) {
-		this(dto.getId(), dto.getName(), dto.getEmail(), dto.getPassword()); 
+		this(dto.getId(), dto.getName(), dto.getEmail(), dto.getPassword(), dto.getRoles()); 
 	}
 	
 	public UserDTO toDTO() {
-		return new UserDTO(id, name, email, password); 
+		return new UserDTO(id, name, email, password, roles); 
 	}
 
 }

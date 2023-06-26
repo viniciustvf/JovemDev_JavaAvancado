@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import br.com.trier.springvespertino.models.User;
@@ -18,9 +19,9 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private UserRepository repository;
 	
-	private void findByEmail(User user) {
-		User busca = repository.findByEmail(user.getEmail()); 
-		if ( busca != null && busca.getId() != user.getId()) {
+	private void isEmailUnique(User user) {
+		Optional<User> busca = repository.findByEmail(user.getEmail()); 
+		if ( busca.isPresent() && busca.get().getId() != user.getId()) {
 			throw new IntegrityViolation("Email já existente: %s".formatted(user.getEmail()));
 		}
 	}
@@ -32,14 +33,14 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public User insert(User user) {
-		findByEmail(user);
+		isEmailUnique(user);
 		return repository.save(user);
 	}
 
 	@Override
 	public User update(User user) {
 		findById(user.getId());
-		findByEmail(user);
+		isEmailUnique(user);
 		return repository.save(user);
 	}
 	
@@ -77,8 +78,22 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public User findByEmail(String email) {
-		Optional<User> user = Optional.ofNullable(repository.findByEmail(email));
-		return user.orElseThrow(() ->new ObjectNotFound("Nenhum email de usuário %s cadastrado".formatted(email))) ;
+	public Optional<User> findByEmail(String email) {
+	    Optional<User> user = repository.findByEmail(email);
+		if(user.isPresent()) {
+			return user;
+		} else {
+			throw new ObjectNotFound("Nenhum email de usuário %s cadastrado".formatted(email));
+		}
+	}
+
+	@Override
+	public Optional<User> findByName(String name) {
+		Optional<User> user = repository.findByName(name);
+		if(user.isPresent()) {
+			return user;
+		} else {
+			throw new ObjectNotFound("Nenhum nome de usuário %s cadastrado".formatted(name));
+		}
 	}
 }
