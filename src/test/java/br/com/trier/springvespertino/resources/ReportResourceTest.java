@@ -46,6 +46,23 @@ public class ReportResourceTest {
 	    assertEquals(HttpStatus.NOT_FOUND, errorResponse.getStatusCode());
 	}
 	
+	@Test
+	@DisplayName("Teste buscar pilotos de pódio em um determinado ano")
+	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
+	@Sql({"classpath:/resources/sqls/pais.sql"})
+	@Sql({"classpath:/resources/sqls/pista.sql"})
+	@Sql({"classpath:/resources/sqls/campeonato.sql"})
+	@Sql({"classpath:/resources/sqls/corrida.sql"})
+	@Sql({"classpath:/resources/sqls/time.sql"})
+	@Sql({"classpath:/resources/sqls/piloto.sql"})
+	@Sql({"classpath:/resources/sqls/piloto_corrida.sql"})
+	public void findPilotsPodiumByYearTest() {
+	    ResponseEntity<RaceCountryYearDTO> response = rest.getForEntity("/races-by-country-year/{country}/{year}", RaceCountryYearDTO.class, 1, 2020);
+	    assertEquals(HttpStatus.OK, response.getStatusCode());
+	    ResponseEntity<RaceCountryYearDTO> errorResponse = rest.getForEntity("/races-by-country-year/{country}/{year}", RaceCountryYearDTO.class, 10, 2022);
+	    assertEquals(HttpStatus.NOT_FOUND, errorResponse.getStatusCode());
+	}
+	
 
 	
 }
