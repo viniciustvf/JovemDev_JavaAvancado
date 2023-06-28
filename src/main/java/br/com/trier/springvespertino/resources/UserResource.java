@@ -26,6 +26,7 @@ public class UserResource {
 	@Autowired
 	private UserService service;
 	
+	@Secured({"ROLE_USER"})
 	@GetMapping("/{id}")
 	public ResponseEntity<UserDTO> findById (@PathVariable Integer id) {
 		return ResponseEntity.ok(service.findById(id).toDTO());		  
@@ -79,6 +80,6 @@ public class UserResource {
 	@Secured({"ROLE_USER"})
 	@GetMapping("/name/{name}")
 	public ResponseEntity <UserDTO> findByName(@PathVariable String name) {
-		return ResponseEntity.ok(service.findByEmail(name).get().toDTO());
+		return ResponseEntity.ok(service.findByName(name).get().toDTO());
 	}
 }

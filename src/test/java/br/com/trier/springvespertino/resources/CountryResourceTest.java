@@ -22,6 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
 import br.com.trier.springvespertino.SpringVespertinoApplication;
+import br.com.trier.springvespertino.config.jwt.LoginDTO;
 import br.com.trier.springvespertino.models.Country;
 
 @ActiveProfiles("test")
@@ -32,15 +33,37 @@ public class CountryResourceTest {
 	@Autowired
 	protected TestRestTemplate rest;
 
+	private HttpHeaders  getHeaders(String email, String senha) {
+		LoginDTO loginDTO = new LoginDTO(email, senha);
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    HttpEntity<LoginDTO> requestEntity = new HttpEntity<>(loginDTO, headers);
+	    ResponseEntity<String> responseEntity = rest.exchange(
+	            "/auth/token",
+	            HttpMethod.POST,
+	            requestEntity,
+	            String.class
+	    );
+	    assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+	    HttpHeaders headersRet = new HttpHeaders();
+	    headersRet.setBearerAuth(responseEntity.getBody());
+	    return headersRet;
+	}
+	
+	
 	private ResponseEntity<Country> getCountry(String url) {
-		return rest.getForEntity(url, Country.class);
+		return rest.exchange(url, 
+				HttpMethod.GET, 
+				new HttpEntity<>(getHeaders("Email 1", "Senha 1")), 
+				Country.class
+			);
 	}
 
 	private ResponseEntity<List<Country>> getCountrys(String url) {
 	    return rest.exchange(
 	        url,
 	        HttpMethod.GET,
-	        null,
+	        new HttpEntity<>(getHeaders("Email 1", "Senha 1")),
 	        new ParameterizedTypeReference<List<Country>>() {}
 	    );
 	}
@@ -48,10 +71,10 @@ public class CountryResourceTest {
 	@Test
 	@DisplayName("Inserir pais")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void insertCountryTest() {
 		Country dto = new Country(null, "pais");
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpHeaders headers = getHeaders("Email 1", "Senha 1");
 		HttpEntity<Country> requestEntity = new HttpEntity<>(dto, headers);
 		ResponseEntity<Country> responseEntity = rest.exchange(
 	            "/country", 
@@ -68,6 +91,7 @@ public class CountryResourceTest {
 	@DisplayName("Buscar por id")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/pais.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void findByIdTest() {
 		ResponseEntity<Country> response = getCountry("/country/1");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
@@ -79,6 +103,7 @@ public class CountryResourceTest {
 	@DisplayName("Buscar por id inexistente")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/pais.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void findByIdNonExistsTest() {
 		ResponseEntity<Country> response = getCountry("/country/100");
 		assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
@@ -88,6 +113,7 @@ public class CountryResourceTest {
 	@DisplayName("Teste listar todos os paiss")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/pais.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void listAllTest() {
 		ResponseEntity<List<Country>> response = getCountrys("/country"); 
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
@@ -95,10 +121,12 @@ public class CountryResourceTest {
 	
 	@Test
 	@DisplayName("Teste alterar pais")
+	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
+	@Sql("classpath:/resources/sqls/pais.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void updateCountryTest() {
 		Country dto = new Country(null, "update");
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpHeaders headers = getHeaders("Email 1", "Senha 1");
 		HttpEntity<Country> requestEntity = new HttpEntity<>(dto, headers);
 		ResponseEntity<Country> responseEntity = rest.exchange(
 	            "/country/1", 
@@ -116,11 +144,14 @@ public class CountryResourceTest {
 	@DisplayName("Teste deletar pais")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/pais.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void deleteCountryTest() {
+		HttpHeaders headers = getHeaders("Email 1", "Senha 1");
+		HttpEntity<Country> requestEntity = new HttpEntity<>(headers);
 		ResponseEntity<Void> responseEntity = rest.exchange(
 	            "/country/1", 
 	            HttpMethod.DELETE,  
-	            null,
+	            requestEntity,
 	            Void.class   
 	    );		
 		assertEquals(responseEntity.getStatusCode(), HttpStatus.NO_CONTENT);
@@ -130,6 +161,7 @@ public class CountryResourceTest {
 	@DisplayName("Buscar por letra que inicia ignore case")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/pais.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void findByNameStartingTest() {
 		ResponseEntity<List<Country>> response = getCountrys("/country/name-starting/p");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
@@ -144,6 +176,7 @@ public class CountryResourceTest {
 	@DisplayName("Buscar por nome ignore case")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/pais.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void findByNameIgnoreCaseTest() {
 		ResponseEntity<Country> response = getCountry("/country/name/pais 1");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);

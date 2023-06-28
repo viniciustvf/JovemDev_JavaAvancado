@@ -22,6 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
 import br.com.trier.springvespertino.SpringVespertinoApplication;
+import br.com.trier.springvespertino.config.jwt.LoginDTO;
 import br.com.trier.springvespertino.models.Championship;
 
 @ActiveProfiles("test")
@@ -32,15 +33,37 @@ public class ChampionshipResourceTest {
 	@Autowired
 	protected TestRestTemplate rest;
 
+	private HttpHeaders  getHeaders(String email, String senha) {
+		LoginDTO loginDTO = new LoginDTO(email, senha);
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    HttpEntity<LoginDTO> requestEntity = new HttpEntity<>(loginDTO, headers);
+	    ResponseEntity<String> responseEntity = rest.exchange(
+	            "/auth/token",
+	            HttpMethod.POST,
+	            requestEntity,
+	            String.class
+	    );
+	    assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+	    HttpHeaders headersRet = new HttpHeaders();
+	    headersRet.setBearerAuth(responseEntity.getBody());
+	    return headersRet;
+	}
+	
+	
 	private ResponseEntity<Championship> getChampionship(String url) {
-		return rest.getForEntity(url, Championship.class);
+		return rest.exchange(url, 
+				HttpMethod.GET, 
+				new HttpEntity<>(getHeaders("Email 1", "Senha 1")), 
+				Championship.class
+			);
 	}
 
 	private ResponseEntity<List<Championship>> getChampionships(String url) {
 	    return rest.exchange(
 	        url,
 	        HttpMethod.GET,
-	        null,
+	        new HttpEntity<>(getHeaders("Email 1", "Senha 1")),
 	        new ParameterizedTypeReference<List<Championship>>() {}
 	    );
 	}
@@ -48,10 +71,10 @@ public class ChampionshipResourceTest {
 	@Test
 	@DisplayName("Inserir campeonato")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void insertChampionshipTest() {
 		Championship dto = new Championship(null, "campeonato", 1990);
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpHeaders headers = getHeaders("Email 1", "Senha 1");
 		HttpEntity<Championship> requestEntity = new HttpEntity<>(dto, headers);
 		ResponseEntity<Championship> responseEntity = rest.exchange(
 	            "/championship", 
@@ -64,13 +87,15 @@ public class ChampionshipResourceTest {
 		assertEquals("campeonato", championship.getDescription());
 	}
 	
+	
+	
 	@Test
 	@DisplayName("Inserir campeonato com ano errado")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void insertChampionshipWithWrongYearTest() {
 		Championship dto = new Championship(null, "campeonato", 1989);
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpHeaders headers = getHeaders("Email 1", "Senha 1");
 		HttpEntity<Championship> requestEntity = new HttpEntity<>(dto, headers);
 		ResponseEntity<Championship> responseEntity = rest.exchange(
 	            "/championship", 
@@ -85,6 +110,7 @@ public class ChampionshipResourceTest {
 	@DisplayName("Buscar por id")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/campeonato.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void findByIdTest() {
 		ResponseEntity<Championship> response = getChampionship("/championship/1");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
@@ -96,6 +122,7 @@ public class ChampionshipResourceTest {
 	@DisplayName("Buscar por id inexistente")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/campeonato.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void findByIdNonExistsTest() {
 		ResponseEntity<Championship> response = getChampionship("/championship/100");
 		assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
@@ -105,6 +132,7 @@ public class ChampionshipResourceTest {
 	@DisplayName("Teste listar todos os campeonatos")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/campeonato.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void listAllTest() {
 		ResponseEntity<List<Championship>> response = getChampionships("/championship"); 
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
@@ -113,6 +141,7 @@ public class ChampionshipResourceTest {
 	@Test
 	@DisplayName("Teste listar todos os campeonatos sem campeonatos")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void listAllWrongTest() {
 		ResponseEntity<Championship> response = getChampionship("/championship"); 
 		assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
@@ -122,10 +151,10 @@ public class ChampionshipResourceTest {
 	@DisplayName("Teste alterar campeonato")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/campeonato.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void updateChampionshipTest() {
 		Championship dto = new Championship(null, "update", 2010);
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpHeaders headers = getHeaders("Email 1", "Senha 1");
 		HttpEntity<Championship> requestEntity = new HttpEntity<>(dto, headers);
 		ResponseEntity<Championship> responseEntity = rest.exchange(
 	            "/championship/1", 
@@ -144,11 +173,14 @@ public class ChampionshipResourceTest {
 	@DisplayName("Teste deletar campeonato")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/campeonato.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void deleteChampionshipTest() {
+		HttpHeaders headers = getHeaders("Email 1", "Senha 1");
+		HttpEntity<Championship> requestEntity = new HttpEntity<>(headers);
 		ResponseEntity<Void> responseEntity = rest.exchange(
 	            "/championship/1", 
 	            HttpMethod.DELETE,  
-	            null,
+	            requestEntity,
 	            Void.class   
 	    );		
 		assertEquals(responseEntity.getStatusCode(), HttpStatus.NO_CONTENT);
@@ -158,6 +190,7 @@ public class ChampionshipResourceTest {
 	@DisplayName("Buscar por letra que inicia ignore case")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/campeonato.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void findByDescriptionStartingTest() {
 		ResponseEntity<List<Championship>> response = getChampionships("/championship/description-starting/c");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
@@ -172,6 +205,7 @@ public class ChampionshipResourceTest {
 	@DisplayName("Buscar por nome ignore case")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/campeonato.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void findByDescriptionIgnoreCaseTest() {
 		ResponseEntity<List<Championship>> response = getChampionships("/championship/description/campeonato 1");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
@@ -186,6 +220,7 @@ public class ChampionshipResourceTest {
 	@DisplayName("Buscar por ano")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/campeonato.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void findByYearTest() {
 		ResponseEntity<List<Championship>> response = getChampionships("/championship/year/2020");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
@@ -200,6 +235,7 @@ public class ChampionshipResourceTest {
 	@DisplayName("Buscar por ano between")
 	@Sql("classpath:/resources/sqls/limpa_tabelas.sql")
 	@Sql("classpath:/resources/sqls/campeonato.sql")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void findByYearBetweenTest() {
 		ResponseEntity<List<Championship>> response = getChampionships("/championship/year-between/2015/2024");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);

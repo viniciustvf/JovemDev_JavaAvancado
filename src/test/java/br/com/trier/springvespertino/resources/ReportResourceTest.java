@@ -3,8 +3,6 @@ package br.com.trier.springvespertino.resources;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,21 +12,19 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import br.com.trier.springvespertino.SpringVespertinoApplication;
-import br.com.trier.springvespertino.models.PilotRace;
-import br.com.trier.springvespertino.models.Race;
-import br.com.trier.springvespertino.models.dto.PilotPodiumYearDTO;
-import br.com.trier.springvespertino.models.dto.PilotRaceDTO;
+import br.com.trier.springvespertino.config.jwt.LoginDTO;
+import br.com.trier.springvespertino.models.Country;
 import br.com.trier.springvespertino.models.dto.RaceCountryYearDTO;
-import br.com.trier.springvespertino.services.exceptions.ObjectNotFound;
 
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = Replace.ANY)
@@ -37,6 +33,23 @@ public class ReportResourceTest {
 
 	@Autowired
 	protected TestRestTemplate rest;
+	
+	private HttpHeaders  getHeaders(String email, String senha) {
+		LoginDTO loginDTO = new LoginDTO(email, senha);
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    HttpEntity<LoginDTO> requestEntity = new HttpEntity<>(loginDTO, headers);
+	    ResponseEntity<String> responseEntity = rest.exchange(
+	            "/auth/token",
+	            HttpMethod.POST,
+	            requestEntity,
+	            String.class
+	    );
+	    assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+	    HttpHeaders headersRet = new HttpHeaders();
+	    headersRet.setBearerAuth(responseEntity.getBody());
+	    return headersRet;
+	}
 	
 	@Test
 	@DisplayName("Teste buscar corridas por país em um determinado ano")
@@ -48,11 +61,14 @@ public class ReportResourceTest {
 	@Sql({"classpath:/resources/sqls/pista.sql"})
 	@Sql({"classpath:/resources/sqls/corrida.sql"})
 	@Sql({"classpath:/resources/sqls/piloto_corrida.sql"})
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void findRaceByYearAndCountryTest() {
-	    ResponseEntity<RaceCountryYearDTO> response = rest.exchange(
+		HttpHeaders headers = getHeaders("Email 1", "Senha 1");
+		HttpEntity<RaceCountryYearDTO> requestEntity = new HttpEntity<>(headers);
+		ResponseEntity<RaceCountryYearDTO> response = rest.exchange(
 	            "/reports/races-by-country-year/1/2020",
 	            HttpMethod.GET,
-	            null,
+	            requestEntity,
 	            new ParameterizedTypeReference<RaceCountryYearDTO>() {}
 	        );
 	    assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -71,11 +87,14 @@ public class ReportResourceTest {
 	@Sql({"classpath:/resources/sqls/pista.sql"})
 	@Sql({"classpath:/resources/sqls/corrida.sql"})
 	@Sql({"classpath:/resources/sqls/piloto_corrida.sql"})
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void findPilotsPodiumByYearTest() {
-	    ResponseEntity<RaceCountryYearDTO> response = rest.exchange(
+		HttpHeaders headers = getHeaders("Email 1", "Senha 1");
+		HttpEntity<RaceCountryYearDTO> requestEntity = new HttpEntity<>(headers);
+		ResponseEntity<RaceCountryYearDTO> response = rest.exchange(
 	            "/reports/pilots-podium-by-year/2020",
 	            HttpMethod.GET,
-	            null,
+	            requestEntity,
 	            new ParameterizedTypeReference<RaceCountryYearDTO>() {}
 	        );
 	    assertEquals(HttpStatus.OK, response.getStatusCode());

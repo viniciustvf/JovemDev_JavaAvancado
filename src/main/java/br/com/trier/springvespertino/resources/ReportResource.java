@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +47,7 @@ public class ReportResource {
 	
 	//Todas as corridas que ocorreram em um país em um determinado ano
 	
+	@Secured({"ROLE_USER"})
 	@GetMapping("/races-by-country-year/{countryId}/{year}")
 	public ResponseEntity<RaceCountryYearDTO> findRaceByCountryAndYear(@PathVariable Integer countryId, @PathVariable Integer year){
 		Country country = countryService.findById(countryId);
@@ -66,6 +68,7 @@ public class ReportResource {
 	
 	//Todos os pilotos que ficaram no pódio em um determinado ano
 	
+	@Secured({"ROLE_USER"})
 	@GetMapping("/pilots-podium-by-year/{year}")
 	public ResponseEntity<PilotPodiumYearDTO> findPilotsPodiumByYear(@PathVariable Integer year) {
 	    List<Race> races = raceService.findByDateContainsYear(year);

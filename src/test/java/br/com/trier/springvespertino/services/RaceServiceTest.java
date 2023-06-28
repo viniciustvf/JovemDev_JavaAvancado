@@ -112,6 +112,19 @@ public class RaceServiceTest extends BaseTests {
     }
     
 	@Test
+    @DisplayName("Teste buscar corridas contendo ano")
+	@Sql({"classpath:/resources/sqls/pais.sql"})
+	@Sql({"classpath:/resources/sqls/pista.sql"})
+	@Sql({"classpath:/resources/sqls/campeonato.sql"})
+	@Sql({"classpath:/resources/sqls/corrida.sql"})
+    void findByDateContainsYearTest() {
+		var lista = raceService.findByDateContainsYear(2020);
+        assertEquals(1, lista.size());
+        var exception = assertThrows(ObjectNotFound.class, () -> raceService.findByDateContainsYear(1992));
+        assertEquals("Nenhuma corrida encontrada para o ano 1992", exception.getMessage());
+    }
+	
+	@Test
     @DisplayName("Teste inserir corrida")
 	@Sql({"classpath:/resources/sqls/pais.sql"})
 	@Sql({"classpath:/resources/sqls/pista.sql"})

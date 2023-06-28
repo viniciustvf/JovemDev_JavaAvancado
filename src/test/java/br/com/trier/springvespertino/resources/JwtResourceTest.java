@@ -1,6 +1,7 @@
 package br.com.trier.springvespertino.resources;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -37,7 +39,7 @@ public class JwtResourceTest {
 	@DisplayName("Obter Token")
 	@Sql({"classpath:/resources/sqls/limpa_tabelas.sql"})
 	@Sql({"classpath:/resources/sqls/usuario.sql"})
-	public void getToken() {
+	public void getTokenTest() {
 		LoginDTO loginDTO = new LoginDTO("Email 1", "Senha 1");
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -57,4 +59,5 @@ public class JwtResourceTest {
 		ResponseEntity<List<UserDTO>> response =  rest.exchange("/user", HttpMethod.GET, new HttpEntity<>(null, headers), new ParameterizedTypeReference<List<UserDTO>>() {} , headers);
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
 	}
+
 }
