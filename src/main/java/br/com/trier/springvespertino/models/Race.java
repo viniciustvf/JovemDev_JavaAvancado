@@ -21,7 +21,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode (of = "id")
+@EqualsAndHashCode(of = "id")
 @Entity(name = "race")
 public class Race {
 
@@ -39,16 +39,13 @@ public class Race {
 
 	@ManyToOne
 	private Championship championship;
-	
-	public Race (RaceDTO dto, Championship championship, Track track) {
+
+	public Race(RaceDTO dto, Championship championship, Track track) {
 		this(dto.getId(), DateUtils.strToZonedDateTime(dto.getDate()), track, championship);
 	}
-	
+
 	public RaceDTO toDTO() {
-	    return new RaceDTO(id, DateUtils.zonedDateTimeToStr(date),
-	            track.getId(),
-	            track.getName(),
-	            championship.getId(),
-	            championship.getDescription());
+		return new RaceDTO(id, DateUtils.zonedDateTimeToStr(date), track.getId(), track.getName(), championship.getId(),
+				championship.getDescription());
 	}
 }

@@ -22,60 +22,60 @@ import br.com.trier.springvespertino.services.TrackService;
 @RequestMapping("/track")
 public class TrackResource {
 
-	@Autowired 
+	@Autowired
 	TrackService service;
-	
-	@Autowired 
+
+	@Autowired
 	CountryService countryService;
-	
-	@Secured({"ROLE_USER"})
+
+	@Secured({ "ROLE_USER" })
 	@GetMapping("/{id}")
-	public ResponseEntity<Track> findById (@PathVariable Integer id) {
-		return ResponseEntity.ok(service.findById(id));		  
+	public ResponseEntity<Track> findById(@PathVariable Integer id) {
+		return ResponseEntity.ok(service.findById(id));
 	}
-	
-	@Secured({"ROLE_ADMIN"})
+
+	@Secured({ "ROLE_ADMIN" })
 	@PostMapping
-	public ResponseEntity<Track> insert (@RequestBody Track track) {
+	public ResponseEntity<Track> insert(@RequestBody Track track) {
 		countryService.findById(track.getCountry().getId());
 		return ResponseEntity.ok(service.insert(track));
 	}
-	
-	@Secured({"ROLE_ADMIN"})
+
+	@Secured({ "ROLE_ADMIN" })
 	@PutMapping("/{id}")
-	public ResponseEntity<Track> update (@PathVariable Integer id, @RequestBody Track track) {
+	public ResponseEntity<Track> update(@PathVariable Integer id, @RequestBody Track track) {
 		track.setId(id);
 		return ResponseEntity.ok(service.update(track));
 	}
-	
-	@Secured({"ROLE_ADMIN"})
+
+	@Secured({ "ROLE_ADMIN" })
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> delete (@PathVariable Integer id) {
+	public ResponseEntity<Void> delete(@PathVariable Integer id) {
 		service.delete(id);
-		return ResponseEntity.noContent().build();		
-	}	
-	
-	@Secured({"ROLE_USER"})
-	@GetMapping
-	public ResponseEntity<List<Track>> listAll () {
-		return ResponseEntity.ok(service.listAll());	
+		return ResponseEntity.noContent().build();
 	}
 
-	@Secured({"ROLE_USER"})
+	@Secured({ "ROLE_USER" })
+	@GetMapping
+	public ResponseEntity<List<Track>> listAll() {
+		return ResponseEntity.ok(service.listAll());
+	}
+
+	@Secured({ "ROLE_USER" })
 	@GetMapping("/name/{name}")
-	public ResponseEntity<List<Track>> findByNameStartingWithIgnoreCase(@PathVariable String name){
+	public ResponseEntity<List<Track>> findByNameStartingWithIgnoreCase(@PathVariable String name) {
 		return ResponseEntity.ok(service.findByNameStartingWithIgnoreCase(name));
 	}
-	
-	@Secured({"ROLE_USER"})
+
+	@Secured({ "ROLE_USER" })
 	@GetMapping("/size/{sizeIn}/{sizeFin}")
-	public ResponseEntity<List<Track>> findBySizeBetween(Integer sizeIn, Integer sizeFin){
+	public ResponseEntity<List<Track>> findBySizeBetween(Integer sizeIn, Integer sizeFin) {
 		return ResponseEntity.ok(service.findBySizeBetween(sizeIn, sizeFin));
 	}
-	
-	@Secured({"ROLE_USER"})
+
+	@Secured({ "ROLE_USER" })
 	@GetMapping("/country/{idCountry}")
-	public ResponseEntity<List<Track>> findByCountryOrderBySizeDesc(@PathVariable Integer idCountry){
+	public ResponseEntity<List<Track>> findByCountryOrderBySizeDesc(@PathVariable Integer idCountry) {
 		return ResponseEntity.ok(service.findByCountryOrderBySizeDesc(countryService.findById(idCountry)));
 	}
 }

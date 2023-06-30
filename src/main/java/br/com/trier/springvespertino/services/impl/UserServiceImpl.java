@@ -14,18 +14,18 @@ import br.com.trier.springvespertino.services.exceptions.IntegrityViolation;
 import br.com.trier.springvespertino.services.exceptions.ObjectNotFound;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository repository;
-	
+
 	private void isEmailUnique(User user) {
-		Optional<User> busca = repository.findByEmail(user.getEmail()); 
-		if ( busca.isPresent() && busca.get().getId() != user.getId()) {
+		Optional<User> busca = repository.findByEmail(user.getEmail());
+		if (busca.isPresent() && busca.get().getId() != user.getId()) {
 			throw new IntegrityViolation("Email já existente: %s".formatted(user.getEmail()));
 		}
 	}
- 
+
 	@Override
 	public User findById(Integer id) {
 		return repository.findById(id).orElseThrow(() -> new ObjectNotFound("O usuário %s não existe".formatted(id)));
@@ -43,17 +43,17 @@ public class UserServiceImpl implements UserService{
 		isEmailUnique(user);
 		return repository.save(user);
 	}
-	
+
 	@Override
 	public void delete(Integer id) {
 		User user = findById(id);
 		repository.delete(user);
 	}
-	
+
 	@Override
 	public List<User> listAll() {
 		List<User> lista = repository.findAll();
-		if ( lista.isEmpty() ) {
+		if (lista.isEmpty()) {
 			throw new ObjectNotFound("Nenhum usuário cadastrado");
 		}
 		return lista;
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<User> findByNameStartingWithIgnoreCase(String letra) {
 		List<User> lista = repository.findByNameStartingWithIgnoreCase(letra);
-		if ( lista.isEmpty() ) {
+		if (lista.isEmpty()) {
 			throw new ObjectNotFound("Nenhum nome de usuário inicia com %s cadastrado".formatted(letra));
 		}
 		return lista;
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<User> findByNameIgnoreCase(String name) {
 		List<User> lista = repository.findByNameIgnoreCase(name);
-		if ( lista.isEmpty() ) {
+		if (lista.isEmpty()) {
 			throw new ObjectNotFound("Nenhum nome de usuário %s cadastrado".formatted(name));
 		}
 		return lista;
@@ -79,8 +79,8 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public Optional<User> findByEmail(String email) {
-	    Optional<User> user = repository.findByEmail(email);
-		if(user.isPresent()) {
+		Optional<User> user = repository.findByEmail(email);
+		if (user.isPresent()) {
 			return user;
 		} else {
 			throw new ObjectNotFound("Nenhum email de usuário %s cadastrado".formatted(email));
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public Optional<User> findByName(String name) {
 		Optional<User> user = repository.findByName(name);
-		if(user.isPresent()) {
+		if (user.isPresent()) {
 			return user;
 		} else {
 			throw new ObjectNotFound("Nenhum nome de usuário %s cadastrado".formatted(name));

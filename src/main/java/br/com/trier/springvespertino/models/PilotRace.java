@@ -17,7 +17,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode (of = "id")
+@EqualsAndHashCode(of = "id")
 @Entity(name = "pilot_race")
 public class PilotRace {
 
@@ -26,22 +26,22 @@ public class PilotRace {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_pilotRace")
 	private Integer id;
-	
+
 	@ManyToOne
 	private Pilot pilot;
-	
+
 	@ManyToOne
 	private Race race;
-	
+
 	@Column(name = "placing_pilotRace")
 	private Integer placing;
-	
-	public PilotRace (PilotRaceDTO dto, Pilot pilot, Race race) {
+
+	public PilotRace(PilotRaceDTO dto, Pilot pilot, Race race) {
 		this(dto.getId(), pilot, race, dto.getPlacing());
 	}
-	
+
 	public PilotRaceDTO toDTO() {
 		return new PilotRaceDTO(getId(), pilot.getId(), pilot.getName(), race.getId(), getPlacing());
 	}
-	
+
 }

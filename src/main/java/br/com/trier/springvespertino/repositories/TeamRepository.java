@@ -8,10 +8,10 @@ import org.springframework.stereotype.Repository;
 import br.com.trier.springvespertino.models.Team;
 
 @Repository
-public interface TeamRepository extends JpaRepository<Team, Integer>{
+public interface TeamRepository extends JpaRepository<Team, Integer> {
 
 	List<Team> findByNameStartingWithIgnoreCase(String name);
-	
+
 	Team findByNameIgnoreCase(String name);
-	
+
 }

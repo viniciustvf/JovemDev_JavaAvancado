@@ -9,10 +9,10 @@ import br.com.trier.springvespertino.models.Country;
 import br.com.trier.springvespertino.models.Team;
 
 @Repository
-public interface CountryRepository extends JpaRepository<Country, Integer>{
+public interface CountryRepository extends JpaRepository<Country, Integer> {
 
 	List<Country> findByNameStartingWithIgnoreCase(String name);
-	
+
 	Country findByNameIgnoreCase(String name);
-	
+
 }

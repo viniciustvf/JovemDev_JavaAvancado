@@ -18,17 +18,17 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 
 	@Autowired
 	private ChampionshipRepository repository;
-	
+
 	private void validateYearChampionship(Integer year) {
-		if(year == null) {
+		if (year == null) {
 			throw new IntegrityViolation("Ano não pode ser nulo");
 		}
 		LocalDate validDate = LocalDate.now().plusYears(1);
-		if(year > validDate.getYear() || year < 1990) {
+		if (year > validDate.getYear() || year < 1990) {
 			throw new IntegrityViolation("Ano deve ser maior que 1990 e menor que %s".formatted(validDate.getYear()));
 		}
 	}
-	
+
 	@Override
 	public Championship findById(Integer id) {
 		Optional<Championship> championship = repository.findById(id);
@@ -47,17 +47,17 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 		validateYearChampionship(championship.getYear());
 		return repository.save(championship);
 	}
-	
+
 	@Override
 	public void delete(Integer id) {
-		Championship championship = findById(id);	
+		Championship championship = findById(id);
 		repository.delete(championship);
 	}
-	
+
 	@Override
 	public List<Championship> listAll() {
 		List<Championship> lista = repository.findAll();
-		if ( lista.isEmpty() ) {
+		if (lista.isEmpty()) {
 			throw new ObjectNotFound("Nenhum campeonato cadastrado");
 		}
 		return lista;
@@ -66,7 +66,7 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 	@Override
 	public List<Championship> findByDescriptionIgnoreCase(String description) {
 		List<Championship> championship = repository.findByDescriptionIgnoreCase(description);
-		if ( championship.isEmpty() ) {
+		if (championship.isEmpty()) {
 			throw new ObjectNotFound("Nenhum campeonato %s cadastrado".formatted(description));
 		}
 		return championship;
@@ -75,7 +75,7 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 	@Override
 	public List<Championship> findByDescriptionStartingWithIgnoreCase(String letra) {
 		List<Championship> lista = repository.findByDescriptionStartingWithIgnoreCase(letra);
-		if ( lista.isEmpty() ) {
+		if (lista.isEmpty()) {
 			throw new ObjectNotFound("Nenhum campeonato inicia com %s cadastrado".formatted(letra));
 		}
 		return lista;
@@ -84,8 +84,8 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 	@Override
 	public List<Championship> findByYear(Integer year) {
 		validateYearChampionship(year);
-		List<Championship> championship = repository.findByYear(year); 
-		if ( championship.isEmpty() ) {
+		List<Championship> championship = repository.findByYear(year);
+		if (championship.isEmpty()) {
 			throw new ObjectNotFound("Nenhum campeonato em %s cadastrado".formatted(year));
 		}
 		return championship;
@@ -96,7 +96,7 @@ public class ChampionshipServiceImpl implements ChampionshipService {
 		validateYearChampionship(initialYear);
 		validateYearChampionship(finalYear);
 		List<Championship> championship = repository.findByYearBetween(initialYear, finalYear);
-		if ( championship.isEmpty() ) {
+		if (championship.isEmpty()) {
 			throw new ObjectNotFound("Nenhum campeonato entre %s e %s cadastrado".formatted(initialYear, finalYear));
 		}
 		return championship;

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.trier.springvespertino.config.jwt.JwtUtil;
 import br.com.trier.springvespertino.config.jwt.LoginDTO;
 
-
 @RestController
 @RequestMapping(value = "/auth")
 public class JwtResource {
@@ -26,8 +25,8 @@ public class JwtResource {
 
 	@PostMapping("/token")
 	public String authenticateAndGetToken(@RequestBody LoginDTO loginDto) {
-		Authentication authentication = auth.authenticate(
-		new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
+		Authentication authentication = auth
+				.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
 		if (authentication.isAuthenticated()) {
 			return jwtUtil.generateToken(loginDto.getEmail());
 		} else {

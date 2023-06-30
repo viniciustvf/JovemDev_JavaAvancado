@@ -21,12 +21,12 @@ import br.com.trier.springvespertino.config.jwt.JwtUserDetailService;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity (securedEnabled = true)
+@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
 	@Autowired
 	private JwtAuthFilter authFilter;
-	
+
 	@Autowired
 	private JwtUserDetailService users;
 
@@ -37,8 +37,7 @@ public class SecurityConfig {
 				.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authenticationProvider())
-				.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-				.build();
+				.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class).build();
 	}
 
 	@Bean

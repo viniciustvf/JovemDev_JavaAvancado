@@ -32,58 +32,52 @@ public class ReportResource {
 
 	@Autowired
 	CountryService countryService;
-	
+
 	@Autowired
 	RaceService raceService;
-	
+
 	@Autowired
 	TrackService trackService;
-	
+
 	@Autowired
 	PilotRaceService pilotRaceService;
-	
+
 	@Autowired
 	PilotService pilotService;
-	
-	//Todas as corridas que ocorreram em um país em um determinado ano
-	
-	@Secured({"ROLE_USER"})
+
+	// Todas as corridas que ocorreram em um país em um determinado ano
+
+	@Secured({ "ROLE_USER" })
 	@GetMapping("/races-by-country-year/{countryId}/{year}")
-	public ResponseEntity<RaceCountryYearDTO> findRaceByCountryAndYear(@PathVariable Integer countryId, @PathVariable Integer year){
+	public ResponseEntity<RaceCountryYearDTO> findRaceByCountryAndYear(@PathVariable Integer countryId,
+			@PathVariable Integer year) {
 		Country country = countryService.findById(countryId);
-		List<RaceDTO> raceDTOs = trackService.findByCountryOrderBySizeDesc(country).stream()
-		        .flatMap(track -> {
-		            try {
-		                return raceService.findByTrack(track).stream();
-		            } catch (ObjectNotFound e) {
-		                return Stream.empty();
-		            }
-		        })
-		        .filter(race -> race.getDate().getYear() == year)
-		        .map(Race::toDTO)
-		        .toList();
+		List<RaceDTO> raceDTOs = trackService.findByCountryOrderBySizeDesc(country).stream().flatMap(track -> {
+			try {
+				return raceService.findByTrack(track).stream();
+			} catch (ObjectNotFound e) {
+				return Stream.empty();
+			}
+		}).filter(race -> race.getDate().getYear() == year).map(Race::toDTO).toList();
 
 		return ResponseEntity.ok(new RaceCountryYearDTO(year, country.getName(), raceDTOs.size(), raceDTOs));
 	}
-	
-	//Todos os pilotos que ficaram no pódio em um determinado ano
-	
-	@Secured({"ROLE_USER"})
+
+	// Todos os pilotos que ficaram no pódio em um determinado ano
+
+	@Secured({ "ROLE_USER" })
 	@GetMapping("/pilots-podium-by-year/{year}")
 	public ResponseEntity<PilotPodiumYearDTO> findPilotsPodiumByYear(@PathVariable Integer year) {
-	    List<Race> races = raceService.findByDateContainsYear(year);
-	    List<PilotRaceDTO> pilotRaceDTOsSelected = races.stream()
-	            .flatMap(race -> {
-	                try {
-	                    return pilotRaceService.findByRace(race).stream()
-	                            .filter(pilotRace -> pilotRace.getPlacing() <= 3)
-	                            .map(PilotRace::toDTO);
-	                } catch (ObjectNotFound e) {
-	                    return Stream.empty();
-	                }
-	            })
-	            .collect(Collectors.toList());
+		List<Race> races = raceService.findByDateContainsYear(year);
+		List<PilotRaceDTO> pilotRaceDTOsSelected = races.stream().flatMap(race -> {
+			try {
+				return pilotRaceService.findByRace(race).stream().filter(pilotRace -> pilotRace.getPlacing() <= 3)
+						.map(PilotRace::toDTO);
+			} catch (ObjectNotFound e) {
+				return Stream.empty();
+			}
+		}).collect(Collectors.toList());
 
-	    return ResponseEntity.ok(new PilotPodiumYearDTO(year, pilotRaceDTOsSelected.size(), pilotRaceDTOsSelected));
+		return ResponseEntity.ok(new PilotPodiumYearDTO(year, pilotRaceDTOsSelected.size(), pilotRaceDTOsSelected));
 	}
 }

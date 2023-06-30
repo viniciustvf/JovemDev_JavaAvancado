@@ -14,16 +14,16 @@ public interface PilotService {
 
 	List<Pilot> listAll();
 
-	Pilot update (Pilot team);
+	Pilot update(Pilot team);
 
-	void delete (Integer id);
-	
+	void delete(Integer id);
+
 	List<Pilot> findByName(String name);
-	
+
 	List<Pilot> findByNameStartingWithIgnoreCase(String name);
-	
+
 	List<Pilot> findByCountry(Country country);
-	
+
 	List<Pilot> findByTeam(Team team);
 
 }
