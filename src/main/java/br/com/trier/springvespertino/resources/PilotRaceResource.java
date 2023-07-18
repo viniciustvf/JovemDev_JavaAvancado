@@ -26,73 +26,76 @@ public class PilotRaceResource {
 
 	@Autowired
 	private PilotRaceService service;
-	
+
 	@Autowired
 	private PilotService pilotService;
-	
+
 	@Autowired
 	private RaceService raceService;
-	
-	@Secured({"ROLE_USER"})
+
+	@Secured({ "ROLE_USER" })
 	@GetMapping("/{id}")
-	public ResponseEntity<PilotRaceDTO> findById (@PathVariable Integer id) {
-		return ResponseEntity.ok(service.findById(id).toDTO());		  
+	public ResponseEntity<PilotRaceDTO> findById(@PathVariable Integer id) {
+		return ResponseEntity.ok(service.findById(id).toDTO());
 	}
-	
-	@Secured({"ROLE_ADMIN"})
+
+	@Secured({ "ROLE_ADMIN" })
 	@PostMapping
-	public ResponseEntity<PilotRaceDTO> insert (@RequestBody PilotRaceDTO pilotRaceDTO) {
-		PilotRace pilotRace = new PilotRace(pilotRaceDTO, pilotService.findById(pilotRaceDTO.getPilotId()), raceService.findById(pilotRaceDTO.getRaceId()));
+	public ResponseEntity<PilotRaceDTO> insert(@RequestBody PilotRaceDTO pilotRaceDTO) {
+		PilotRace pilotRace = new PilotRace(pilotRaceDTO, pilotService.findById(pilotRaceDTO.getPilotId()),
+				raceService.findById(pilotRaceDTO.getRaceId()));
 		return ResponseEntity.ok(service.insert(pilotRace).toDTO());
 	}
 
-	@Secured({"ROLE_ADMIN"})
+	@Secured({ "ROLE_ADMIN" })
 	@PutMapping("/{id}")
-	public ResponseEntity<PilotRaceDTO> update (@PathVariable Integer id, @RequestBody PilotRaceDTO pilotRaceDTO) {
-		PilotRace pilotRace = new PilotRace(pilotRaceDTO, pilotService.findById(pilotRaceDTO.getPilotId()), raceService.findById(pilotRaceDTO.getRaceId()));
+	public ResponseEntity<PilotRaceDTO> update(@PathVariable Integer id, @RequestBody PilotRaceDTO pilotRaceDTO) {
+		PilotRace pilotRace = new PilotRace(pilotRaceDTO, pilotService.findById(pilotRaceDTO.getPilotId()),
+				raceService.findById(pilotRaceDTO.getRaceId()));
 		pilotRace.setId(id);
 		return ResponseEntity.ok(service.update(pilotRace).toDTO());
 	}
-	
-	@Secured({"ROLE_ADMIN"})
+
+	@Secured({ "ROLE_ADMIN" })
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> delete (@PathVariable Integer id) {
+	public ResponseEntity<Void> delete(@PathVariable Integer id) {
 		service.delete(id);
-		return ResponseEntity.noContent().build();		
-	}	
-	
-	@Secured({"ROLE_USER"})
+		return ResponseEntity.noContent().build();
+	}
+
+	@Secured({ "ROLE_USER" })
 	@GetMapping
-	public ResponseEntity<List<PilotRaceDTO>> listAll () {
+	public ResponseEntity<List<PilotRaceDTO>> listAll() {
 		return ResponseEntity.ok(service.listAll().stream().map((pilotRace) -> pilotRace.toDTO()).toList());
 	}
-	
-	@Secured({"ROLE_USER"})
+
+	@Secured({ "ROLE_USER" })
 	@GetMapping("/placing/{placing}")
 	public ResponseEntity<List<PilotRaceDTO>> findByPlacing(@PathVariable Integer placing) {
 		List<PilotRace> lista = service.findByPlacing(placing);
-		return ResponseEntity.ok(lista.stream().map((pilotRace) -> pilotRace.toDTO()).toList());		
-	} 
-	
-	@Secured({"ROLE_USER"})
+		return ResponseEntity.ok(lista.stream().map((pilotRace) -> pilotRace.toDTO()).toList());
+	}
+
+	@Secured({ "ROLE_USER" })
 	@GetMapping("/placing-between/{initialPlacing}/{finalPlacing}")
-	public ResponseEntity<List<PilotRaceDTO>> findByPlacingBetween(@PathVariable Integer initialPlacing, @PathVariable Integer finalPlacing) {
+	public ResponseEntity<List<PilotRaceDTO>> findByPlacingBetween(@PathVariable Integer initialPlacing,
+			@PathVariable Integer finalPlacing) {
 		List<PilotRace> lista = service.findByPlacingBetween(initialPlacing, finalPlacing);
-		return ResponseEntity.ok(lista.stream().map((pilotRace) -> pilotRace.toDTO()).toList());		
-	} 
-	
-	@Secured({"ROLE_USER"})
+		return ResponseEntity.ok(lista.stream().map((pilotRace) -> pilotRace.toDTO()).toList());
+	}
+
+	@Secured({ "ROLE_USER" })
 	@GetMapping("/pilot/{pilotId}")
 	public ResponseEntity<List<PilotRaceDTO>> findByPilot(@PathVariable Integer pilotId) {
 		List<PilotRace> lista = service.findByPilot(pilotService.findById(pilotId));
-		return ResponseEntity.ok(lista.stream().map((pilotRace) -> pilotRace.toDTO()).toList());		
-	} 
-	
-	@Secured({"ROLE_USER"})
+		return ResponseEntity.ok(lista.stream().map((pilotRace) -> pilotRace.toDTO()).toList());
+	}
+
+	@Secured({ "ROLE_USER" })
 	@GetMapping("/race/{raceId}")
 	public ResponseEntity<List<PilotRaceDTO>> findByRace(@PathVariable Integer raceId) {
 		List<PilotRace> lista = service.findByRace(raceService.findById(raceId));
-		return ResponseEntity.ok(lista.stream().map((pilotRace) -> pilotRace.toDTO()).toList());		
-	} 
+		return ResponseEntity.ok(lista.stream().map((pilotRace) -> pilotRace.toDTO()).toList());
+	}
 
 }

@@ -8,14 +8,14 @@ import org.springframework.stereotype.Repository;
 import br.com.trier.springvespertino.models.Championship;
 
 @Repository
-public interface ChampionshipRepository extends JpaRepository<Championship, Integer>{
+public interface ChampionshipRepository extends JpaRepository<Championship, Integer> {
 
 	List<Championship> findByDescriptionStartingWithIgnoreCase(String description);
-	
+
 	List<Championship> findByDescriptionIgnoreCase(String description);
-	
-	List<Championship>findByYear(Integer year);
-	
-	List<Championship>findByYearBetween(Integer initialYear, Integer finallYear);
-	
+
+	List<Championship> findByYear(Integer year);
+
+	List<Championship> findByYearBetween(Integer initialYear, Integer finallYear);
+
 }

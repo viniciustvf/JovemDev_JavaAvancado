@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 public class RaceDTO {
 
 	private Integer id;
-	
+
 	private String date;
-	
+
 	private Integer trackId;
-	
+
 	private String trackName;
-	
+
 	private Integer championshipId;
-	
+
 	private String championshipDescription;
-	
+
 }

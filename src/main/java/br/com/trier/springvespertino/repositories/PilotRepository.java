@@ -10,14 +10,14 @@ import br.com.trier.springvespertino.models.Pilot;
 import br.com.trier.springvespertino.models.Team;
 
 @Repository
-public interface PilotRepository extends JpaRepository<Pilot, Integer>{
-	
+public interface PilotRepository extends JpaRepository<Pilot, Integer> {
+
 	List<Pilot> findByName(String name);
-	
+
 	List<Pilot> findByNameStartingWithIgnoreCase(String name);
-	
+
 	List<Pilot> findByCountry(Country country);
-	
+
 	List<Pilot> findByTeam(Team team);
-	
+
 }

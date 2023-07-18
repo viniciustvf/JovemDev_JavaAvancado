@@ -17,11 +17,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode (of = "id")
+@EqualsAndHashCode(of = "id")
 @Entity(name = "track")
 public class Track {
 
-	@Setter 
+	@Setter
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_track")
@@ -29,7 +29,7 @@ public class Track {
 
 	@Column(name = "name_track")
 	private String name;
-	
+
 	@Column(name = "size_track")
 	private Integer size;
 

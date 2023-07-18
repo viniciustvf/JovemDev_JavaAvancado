@@ -14,17 +14,17 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode (of = "id")
-@Entity(name="country")
+@EqualsAndHashCode(of = "id")
+@Entity(name = "country")
 public class Country {
-	
+
 	@Setter
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_country")
 	private Integer id;
-	
+
 	@Column(name = "name_country", unique = true)
 	private String name;
-	
+
 }

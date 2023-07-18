@@ -18,14 +18,14 @@ public class TeamServiceImpl implements TeamService {
 
 	@Autowired
 	private TeamRepository repository;
-	
+
 	private void isTeamNameUnique(Team team) {
 		Team busca = repository.findByNameIgnoreCase(team.getName());
-		if ( busca != null && busca.getId() != team.getId()) {
+		if (busca != null && busca.getId() != team.getId()) {
 			throw new IntegrityViolation("Nome já existente: %s".formatted(team.getName()));
 		}
 	}
-	
+
 	@Override
 	public Team findById(Integer id) {
 		Optional<Team> team = repository.findById(id);
@@ -44,19 +44,19 @@ public class TeamServiceImpl implements TeamService {
 		isTeamNameUnique(team);
 		return repository.save(team);
 	}
-	
+
 	@Override
 	public void delete(Integer id) {
-		Team team = findById(id);	
-		if (team != null ) {
+		Team team = findById(id);
+		if (team != null) {
 			repository.delete(team);
 		}
 	}
-	
+
 	@Override
 	public List<Team> listAll() {
 		List<Team> lista = repository.findAll();
-		if ( lista.isEmpty() ) {
+		if (lista.isEmpty()) {
 			throw new ObjectNotFound("Nenhum time cadastrado");
 		}
 		return lista;
@@ -65,7 +65,7 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	public Team findByNameIgnoreCase(String name) {
 		Team team = repository.findByNameIgnoreCase(name);
-		if ( team == null) {
+		if (team == null) {
 			throw new ObjectNotFound("Nenhum time %s cadastrado".formatted(name));
 		}
 		return team;
@@ -74,9 +74,9 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	public List<Team> findByNameStartingWithIgnoreCase(String letra) {
 		List<Team> lista = repository.findByNameStartingWithIgnoreCase(letra);
-		if ( lista.isEmpty() ) {
+		if (lista.isEmpty()) {
 			throw new ObjectNotFound("Nenhum nome de time inicia com %s cadastrado".formatted(letra));
 		}
-		return lista; 
+		return lista;
 	}
 }

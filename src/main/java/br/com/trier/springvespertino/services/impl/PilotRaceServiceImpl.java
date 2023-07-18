@@ -14,26 +14,27 @@ import br.com.trier.springvespertino.services.exceptions.IntegrityViolation;
 import br.com.trier.springvespertino.services.exceptions.ObjectNotFound;
 
 @Service
-public class PilotRaceServiceImpl implements PilotRaceService{
+public class PilotRaceServiceImpl implements PilotRaceService {
 
 	@Autowired
 	PilotRaceRepository repository;
-	
+
 	private void validatePilotRace(PilotRace pilotRace) {
-		if(pilotRace.getPilot() == null) {
+		if (pilotRace.getPilot() == null) {
 			throw new IntegrityViolation("O piloto não pode ser nulo");
 		}
-		if(pilotRace.getRace() == null) {
+		if (pilotRace.getRace() == null) {
 			throw new IntegrityViolation("A corrida não pode ser nula");
 		}
-		if(pilotRace.getPlacing() == null) {
+		if (pilotRace.getPlacing() == null) {
 			throw new IntegrityViolation("A colocação não pode ser nula");
 		}
 	}
-	
+
 	@Override
 	public PilotRace findById(Integer id) {
-		return repository.findById(id).orElseThrow(() -> new ObjectNotFound("A corrida piloto %s não existe".formatted(id)));
+		return repository.findById(id)
+				.orElseThrow(() -> new ObjectNotFound("A corrida piloto %s não existe".formatted(id)));
 	}
 
 	@Override
@@ -48,17 +49,17 @@ public class PilotRaceServiceImpl implements PilotRaceService{
 		validatePilotRace(pilotRace);
 		return repository.save(pilotRace);
 	}
-	
+
 	@Override
 	public void delete(Integer id) {
 		PilotRace pilotRace = findById(id);
 		repository.delete(pilotRace);
 	}
-	
+
 	@Override
 	public List<PilotRace> listAll() {
 		List<PilotRace> lista = repository.findAll();
-		if ( lista.isEmpty() ) {
+		if (lista.isEmpty()) {
 			throw new ObjectNotFound("Nenhum piloto corrida cadastrado");
 		}
 		return lista;
@@ -67,7 +68,7 @@ public class PilotRaceServiceImpl implements PilotRaceService{
 	@Override
 	public List<PilotRace> findByPlacing(Integer placing) {
 		List<PilotRace> lista = repository.findByPlacing(placing);
-		if (lista.isEmpty()) {	
+		if (lista.isEmpty()) {
 			throw new ObjectNotFound("Nenhuma corrida piloto encontrada para a colocação %s".formatted(placing));
 		}
 		return lista;
@@ -76,8 +77,9 @@ public class PilotRaceServiceImpl implements PilotRaceService{
 	@Override
 	public List<PilotRace> findByPlacingBetween(Integer initialPlacing, Integer finalPlacing) {
 		List<PilotRace> lista = repository.findByPlacingBetween(initialPlacing, finalPlacing);
-		if (lista.isEmpty()) {	
-			throw new ObjectNotFound("Nenhuma corrida piloto encontrada entre a colocação %s° e %s°".formatted(initialPlacing, finalPlacing));
+		if (lista.isEmpty()) {
+			throw new ObjectNotFound("Nenhuma corrida piloto encontrada entre a colocação %s° e %s°"
+					.formatted(initialPlacing, finalPlacing));
 		}
 		return lista;
 	}
@@ -85,7 +87,7 @@ public class PilotRaceServiceImpl implements PilotRaceService{
 	@Override
 	public List<PilotRace> findByPilot(Pilot pilot) {
 		List<PilotRace> lista = repository.findByPilot(pilot);
-		if (lista.isEmpty()) {	
+		if (lista.isEmpty()) {
 			throw new ObjectNotFound("Nenhuma corrida piloto encontrada para o piloto %s".formatted(pilot.getName()));
 		}
 		return lista;
@@ -94,7 +96,7 @@ public class PilotRaceServiceImpl implements PilotRaceService{
 	@Override
 	public List<PilotRace> findByRace(Race race) {
 		List<PilotRace> lista = repository.findByRace(race);
-		if (lista.isEmpty()) {	
+		if (lista.isEmpty()) {
 			throw new ObjectNotFound("Nenhuma corrida piloto encontrada para a corrida %s".formatted(race.getId()));
 		}
 		return lista;

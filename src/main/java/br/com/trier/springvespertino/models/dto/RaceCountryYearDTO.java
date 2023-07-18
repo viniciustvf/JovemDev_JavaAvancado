@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 public class RaceCountryYearDTO {
 
 	private Integer year;
-	
+
 	private String country;
-	
+
 	private Integer raceSize;
-	
+
 	private List<RaceDTO> racers;
-	
+
 }

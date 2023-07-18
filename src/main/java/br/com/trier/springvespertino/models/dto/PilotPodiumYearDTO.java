@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PilotPodiumYearDTO {
-	
+
 	private Integer year;
-	
+
 	private Integer pilotSize;
-	
+
 	private List<PilotRaceDTO> pilotRaceDTO;
-	
+
 }

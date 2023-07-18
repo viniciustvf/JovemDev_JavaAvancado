@@ -13,14 +13,14 @@ public interface TrackService {
 
 	List<Track> listAll();
 
-	Track update (Track track);
+	Track update(Track track);
 
-	void delete (Integer id);
-	
+	void delete(Integer id);
+
 	List<Track> findByNameStartingWithIgnoreCase(String name);
-	
+
 	List<Track> findBySizeBetween(Integer sizeIn, Integer sizeFin);
-	
+
 	List<Track> findByCountryOrderBySizeDesc(Country country);
 
 }

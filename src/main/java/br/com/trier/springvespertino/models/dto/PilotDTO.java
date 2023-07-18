@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 public class PilotDTO {
 
 	private Integer id;
-	
+
 	private String name;
-	
+
 	private Integer countryId;
-	
+
 	private String countryName;
-	
+
 	private Integer teamId;
-	
+
 	private String teamName;
-	
+
 }

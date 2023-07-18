@@ -1,6 +1,5 @@
 package br.com.trier.springvespertino.models;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,8 +15,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode (of = "id")
-@Entity(name="championship")
+@EqualsAndHashCode(of = "id")
+@Entity(name = "championship")
 public class Championship {
 
 	@Setter
@@ -25,11 +24,11 @@ public class Championship {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_championship")
 	private Integer id;
-	
+
 	@Column(name = "description_champ")
 	private String description;
-	
+
 	@Column(name = "year_champ")
 	private Integer year;
-	
+
 }

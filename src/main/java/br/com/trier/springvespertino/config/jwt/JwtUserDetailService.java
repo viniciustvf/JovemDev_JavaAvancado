@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import br.com.trier.springvespertino.repositories.UserRepository;
 
-
 @Component
 public class JwtUserDetailService implements UserDetailsService {
 
@@ -21,12 +20,8 @@ public class JwtUserDetailService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		br.com.trier.springvespertino.models.User user = repository.findByEmail(email).orElseThrow(null);
-		return User.builder()
-				.username(user.getEmail())
-				.password(encoder.encode(user.getPassword()))
-				.roles(user.getRoles().split(","))
-				.build();
+		return User.builder().username(user.getEmail()).password(encoder.encode(user.getPassword()))
+				.roles(user.getRoles().split(",")).build();
 	}
-	
 
 }

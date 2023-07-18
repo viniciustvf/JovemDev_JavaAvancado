@@ -9,12 +9,12 @@ import br.com.trier.springvespertino.models.Country;
 import br.com.trier.springvespertino.models.Track;
 
 @Repository
-public interface TrackRepository extends JpaRepository<Track, Integer>{
+public interface TrackRepository extends JpaRepository<Track, Integer> {
 
 	List<Track> findByNameStartingWithIgnoreCase(String name);
-	
+
 	List<Track> findBySizeBetween(Integer sizeIn, Integer sizeFin);
-	
+
 	List<Track> findByCountryOrderBySizeDesc(Country country);
-	
+
 }

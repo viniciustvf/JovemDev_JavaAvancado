@@ -17,16 +17,16 @@ public interface RaceService {
 
 	List<Race> listAll();
 
-	Race update (Race race);
+	Race update(Race race);
 
-	void delete (Integer id);
-	
+	void delete(Integer id);
+
 	List<Race> findByDate(ZonedDateTime date);
-	
+
 	List<Race> findByTrack(Track track);
-	
+
 	List<Race> findByChampionship(Championship champ);
-	
+
 	List<Race> findByDateContainsYear(Integer year);
-	
+
 }

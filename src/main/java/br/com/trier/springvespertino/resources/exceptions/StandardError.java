@@ -10,8 +10,11 @@ import lombok.Getter;
 public class StandardError {
 
 	private LocalDateTime time;
+
 	private Integer status;
+
 	private String error;
+
 	private String url;
-	
+
 }

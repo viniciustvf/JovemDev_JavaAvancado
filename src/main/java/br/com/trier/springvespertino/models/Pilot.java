@@ -21,7 +21,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode (of = "id")
+@EqualsAndHashCode(of = "id")
 @Entity(name = "pilot")
 public class Pilot {
 
@@ -39,13 +39,13 @@ public class Pilot {
 
 	@ManyToOne
 	private Team team;
-	
-	public Pilot (PilotDTO dto, Country country, Team team) {
-		this(dto.getId(), dto.getName(), country, team); 
+
+	public Pilot(PilotDTO dto, Country country, Team team) {
+		this(dto.getId(), dto.getName(), country, team);
 	}
-	
+
 	public PilotDTO toDTO() {
-	    return new PilotDTO(getId(), getName(), country.getId(), country.getName(), team.getId(), team.getName()); 
+		return new PilotDTO(getId(), getName(), country.getId(), country.getName(), team.getId(), team.getName());
 	}
 
 }
