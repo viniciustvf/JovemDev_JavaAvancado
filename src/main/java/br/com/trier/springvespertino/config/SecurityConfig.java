@@ -42,13 +42,10 @@ public class SecurityConfig {
 				//.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authenticationProvider())
-<<<<<<< HEAD
 				.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
 				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.build();
-=======
 				.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class).build();
->>>>>>> 92ed17f90a114051c570964704855acd92832ecf
 	}
 
 	@Bean
@@ -74,6 +71,7 @@ public class SecurityConfig {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(List.of("http://localhost:4200"));
 		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT"));
+		configuration.setAllowedHeaders(List.of("Content-Type"));
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
