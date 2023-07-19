@@ -45,7 +45,6 @@ public class SecurityConfig {
 				.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
 				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.build();
-				.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class).build();
 	}
 
 	@Bean
